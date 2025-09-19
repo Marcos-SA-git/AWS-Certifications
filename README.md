@@ -63,6 +63,7 @@ My goal with this repository is to provide:
 - Each certification has its own folder with a dedicated README.
 - Inside you will find: summaries, detailed explanations, proposed hands-on practices, and additional resources.
 - Content is available in **Spanish** and, progressively, in **English**.
+- The notes are standardized following the same order of sections and following the [markdownlint](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md) rules (with minor exceptions).
 
 ### 🤝 Open collaboration
 
