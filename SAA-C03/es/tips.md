@@ -23,7 +23,7 @@ En este tip veremos cómo usar la consola de Linux en Windows sin tener que recu
 
    Sea cual sea el camino que escojas te debería aparecer la siguiente ventana, en la cual deberás bajar y marcar la opción "`Subsistema de Windows para Linux`", también conocido como WSL (*Windows Subsystem for Linux*):
 
-   ![Ventana de características opcionales en Windows mostrando la opción de habilitar WSL](/AWS-Certifications/SAA-C03/assets/windows-characteristics.png)
+   ![Ventana de características opcionales en Windows mostrando la opción de habilitar WSL](/SAA-C03/assets/windows-characteristics.png)
 
 2. **Instala Ubuntu:**
    Tras esto, reinicia Windows, y cuando terminen de instalarse las nuevas características, ve a la tienda de Microsoft y busca "`Ubuntu`" e instálalo.
@@ -68,4 +68,5 @@ En este tip veremos cómo usar la consola de Linux en Windows sin tener que recu
    *Happy Coding!*
 
 ---
+
 
