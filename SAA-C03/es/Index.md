@@ -9,4 +9,3 @@
 ## Otros / Extras
 
 - [Tips - Consejos - Extras](tips.md)
-
