@@ -5,7 +5,7 @@
 ### 🇪🇸 Bienvenida
 
 Bienvenido a este repositorio, un espacio donde comparto **mis aprendizajes, apuntes, prácticas y progreso en el camino hacia las certificaciones de AWS**.
-Este proyecto no solo busca documentar mi ruta de estudio, sino también servir como **portfolio personal**, mostrando mi disciplina, profesionalismo y capacidad de comunicación en la creación de documentación técnica clara y estructurada.
+Este proyecto no solo busca documentar mi ruta de estudio, sino también servir como **portfolio personal**, mostrando mi disciplina, profesionalidad y capacidad de comunicación en la creación de documentación técnica clara y estructurada.
 
 ### 🎯 Misión
 
