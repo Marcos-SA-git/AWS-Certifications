@@ -13,7 +13,7 @@ Ofrece un enorme catálogo de cursos sobre multitud de temas, no solo de *Cloud*
 
 En el caso de esta certificación se requiere el plan *Cloud+* o el *Complete* para poder acceder a los cursos relacionados con esta certificación.
 
-👉 [Ruta con todos los cursos sobre esta certificación en PluralSight](https://app.pluralsight.com/paths/certificate/aws-certified-solutions-architect-associate-saa-c03)
+👉 [Ruta con todos los cursos sobre esta certificación en PluralSight](https://www.pluralsight.com/paths/aws-certified-solutions-architect-associate-saa-c03)
 
 ## ¿Cuánto cuesta? 💸
 
