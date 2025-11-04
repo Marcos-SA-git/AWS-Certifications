@@ -1,4 +1,4 @@
-# 🥈 Nivel 1 — Media
+# 🥈 Nivel 00 — Media
 
 Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 
@@ -25,7 +25,7 @@ Construir una **VPC** con **subred pública**, **Internet Gateway**, **tabla de 
 
 ```mermaid
 ---
-title: "Nivel 1 — Objetivo final"
+title: "Nivel 00 — Objetivo final"
 ---
 graph BT
 
@@ -231,7 +231,7 @@ Permite **HTTP (80)** desde `0.0.0.0/0`.
 ```bash
 aws ec2 create-security-group \
   --group-name SG-WebPublica \
-  --description "SG web publico nivel 1" \
+  --description "SG web publico Nivel 00" \
   --vpc-id <VPC_ID> \
   --region eu-west-1
 
