@@ -1,4 +1,4 @@
-# 🥉 Nivel 0 — Fácil
+# 🥉 Nivel 00 — Fácil
 
 Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 
@@ -22,7 +22,7 @@ Construir una **VPC** con **subred pública**, **Internet Gateway**, **tabla de 
 
 ```mermaid
 ---
-title: "Nivel 0 — Objetivo final"
+title: "Nivel 00 — Objetivo final"
 ---
 graph BT
 
@@ -61,7 +61,7 @@ PC  -->|"Consulta por HTTP a servidor web en AWS"| Internet
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 1: VPC creada"
+title: "Nivel 00 — Paso 1: VPC creada"
 ---
 graph BT
 subgraph AWS[AWS]
@@ -87,7 +87,7 @@ end
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 2: Subnet pública dentro de la VPC"
+title: "Nivel 00 — Paso 2: Subnet pública dentro de la VPC"
 ---
 graph BT
 subgraph AWS[AWS]
@@ -110,7 +110,7 @@ end
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 3: IGW adjunto a la VPC"
+title: "Nivel 00 — Paso 3: IGW adjunto a la VPC"
 ---
 graph BT
 subgraph AWS[AWS]
@@ -139,7 +139,7 @@ IGW --> VPC
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 4: RT pública con salida al IGW"
+title: "Nivel 00 — Paso 4: RT pública con salida al IGW"
 ---
 graph BT
 subgraph AWS[AWS]
@@ -160,7 +160,7 @@ RT --> SUB
 
 1. **Security Groups** → **Create security group**.
 2. **Security group name**: `SG-WebPublica`
-3. **Description**: `SG web publico Nivel 0`
+3. **Description**: `SG web publico Nivel 00`
 4. **VPC**: `VPC-Publica`
 5. **Inbound rules** → **Add rule**:
    - **Type**: `HTTP`
@@ -173,7 +173,7 @@ RT --> SUB
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 5: SG de web creado"
+title: "Nivel 00 — Paso 5: SG de web creado"
 ---
 graph BT
 subgraph AWS[AWS]
@@ -221,7 +221,7 @@ systemctl start httpd
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 6: EC2 desplegada con SG y RT"
+title: "Nivel 00 — Paso 6: EC2 desplegada con SG y RT"
 ---
 graph BT
 subgraph AWS[AWS]
@@ -253,7 +253,7 @@ SG --> EC2
 
 ```mermaid
 ---
-title: "Nivel 0 — Paso 7: Acceso HTTP desde Internet y tu PC"
+title: "Nivel 00 — Paso 7: Acceso HTTP desde Internet y tu PC"
 ---
 graph BT
 
@@ -430,7 +430,7 @@ aws ec2 associate-route-table \
 ```bash
 aws ec2 create-security-group \
   --group-name SG-WebPublica \
-  --description "SG web publico Nivel 0" \
+  --description "SG web publico Nivel 00" \
   --vpc-id <VPC_ID> \
   --region eu-west-1
 ```
