@@ -75,3 +75,13 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 | Nivel | Descripción | Dificultades |
 |:------|:-------------|:-------------|
 | **Nivel 10** | Descripción | [F](./Fácil/Nivel-10.md) · [M](./Medio/Nivel-10.md) · [D](./Difícil/Nivel-10.md) |
+| **Nivel 11** | Descripción | [F](./Fácil/Nivel-11.md) · [M](./Medio/Nivel-11.md) · [D](./Difícil/Nivel-11.md) |
+| **Nivel 12** | Descripción | [F](./Fácil/Nivel-12.md) · [M](./Medio/Nivel-12.md) · [D](./Difícil/Nivel-12.md) |
+| **Nivel 13** | Descripción | [F](./Fácil/Nivel-13.md) · [M](./Medio/Nivel-13.md) · [D](./Difícil/Nivel-13.md) |
+| **Nivel 14** | Descripción | [F](./Fácil/Nivel-14.md) · [M](./Medio/Nivel-14.md) · [D](./Difícil/Nivel-14.md) |
+| **Nivel 15** | Descripción | [F](./Fácil/Nivel-15.md) · [M](./Medio/Nivel-15.md) · [D](./Difícil/Nivel-15.md) |
+| **Nivel 16** | Descripción | [F](./Fácil/Nivel-16.md) · [M](./Medio/Nivel-16.md) · [D](./Difícil/Nivel-16.md) |
+| **Nivel 17** | Descripción | [F](./Fácil/Nivel-17.md) · [M](./Medio/Nivel-17.md) · [D](./Difícil/Nivel-17.md) |
+| **Nivel 18** | Descripción | [F](./Fácil/Nivel-18.md) · [M](./Medio/Nivel-18.md) · [D](./Difícil/Nivel-18.md) |
+| **Nivel 19** | Descripción | [F](./Fácil/Nivel-19.md) · [M](./Medio/Nivel-19.md) · [D](./Difícil/Nivel-19.md) |
+| **MiniBoss 2 ⛳** |  | [R](./Realista/MiniBoss-2.md) |
