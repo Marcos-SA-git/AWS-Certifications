@@ -3,7 +3,7 @@
 
 Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 
-**[Ir a la CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
+**[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
 ---
 
