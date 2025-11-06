@@ -29,7 +29,7 @@ graph BT
 subgraph AWS[AWS]
     IGW[Internet Gateway]
     subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-        RT[Route Table publica<br>0.0.0.0/0 -> IGW]
+        RT[RT-Publica<br>0.0.0.0/0 -> IGW]
         subgraph SUB["Subnet publica (10.0.1.0/24)"]
             EC2[EC2-WebPublica<br>HTTP:80]
             SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
@@ -145,7 +145,7 @@ graph BT
 subgraph AWS[AWS]
   IGW[Internet Gateway]
   subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[Route Table publica<br>0.0.0.0/0 -> IGW]
+    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
     subgraph SUB["Subnet publica (10.0.1.0/24)"]
     end
   end
@@ -179,7 +179,7 @@ graph BT
 subgraph AWS[AWS]
   IGW[Internet Gateway]
   subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[Route Table publica<br>0.0.0.0/0 -> IGW]
+    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
     subgraph SUB["Subnet_publica(10.0.1.0/24)"]
       SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
     end
@@ -227,7 +227,7 @@ graph BT
 subgraph AWS[AWS]
   IGW[Internet Gateway]
   subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[Route Table publica<br>0.0.0.0/0 -> IGW]
+    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
     subgraph SUB["Subnet publica (10.0.1.0/24)"]
       EC2[EC2-WebPublica<br>HTTP:80]
       SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
@@ -260,7 +260,7 @@ graph BT
 subgraph AWS[AWS]
   IGW[Internet Gateway]
   subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[Route Table publica<br>0.0.0.0/0 -> IGW]
+    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
     subgraph SUB["Subnet publica (10.0.1.0/24)"]
       EC2[EC2-WebPublica<br>HTTP:80]
       SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
@@ -452,11 +452,11 @@ aws ec2 authorize-security-group-ingress \
 *(Opcional) Permitir SSH (22) solo desde tu IP pública:*
 
 ```bash
-MYIP="$(curl -s https://ifconfig.me)/32"
+# Obtén tu IP pública y añade /32 manualmente; reemplaza <TU_IP_PUBLICA/32> abajo
 aws ec2 authorize-security-group-ingress \
   --group-id <SG_ID> \
   --protocol tcp --port 22 \
-  --cidr "$MYIP" \
+  --cidr <TU_IP_PUBLICA/32> \
   --region eu-west-1
 ```
 
@@ -520,7 +520,7 @@ aws ec2 run-instances \
 
 ```bash
 aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica" --region eu-west-1
-# (Opcional) Usa 'aws ec2 wait instance-running --instance-ids <INSTANCE_ID> --region eu-west-1' si tienes el ID exacto
+# Revisa 'State.Name' en la salida JSON hasta ver 'running'
 ```
 
 **Obtener la IP pública:**
@@ -528,10 +528,8 @@ aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica" --reg
 ```bash
 aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=EC2-WebPublica" \
-  --query "Reservations[0].Instances[0].PublicIpAddress" \
-  --output text \
   --region eu-west-1
-# Copia el valor como <PUBLIC_IP>
+# Copia el campo 'PublicIpAddress' manualmente como <PUBLIC_IP>
 ```
 
 ---
@@ -563,10 +561,8 @@ curl http://<PUBLIC_IP>
 ```bash
 aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=EC2-WebPublica" \
-  --query "Reservations[0].Instances[0].InstanceId" \
-  --output text \
   --region eu-west-1
-# Copia el resultado como <INSTANCE_ID>
+# Copia manualmente el 'InstanceId' como <INSTANCE_ID>
 ```
 
 ```bash
@@ -586,11 +582,8 @@ aws ec2 delete-security-group \
 #### 3) Desasociar y borrar Route Table
 
 ```bash
-aws ec2 describe-route-tables --route-table-ids <RT_ID> \
-  --query "RouteTables[0].Associations[?SubnetId!='null'].RouteTableAssociationId" \
-  --output text \
-  --region eu-west-1
-# Copia el resultado como <RT_ASSOC_ID>
+aws ec2 describe-route-tables --route-table-ids <RT_ID> --region eu-west-1
+# Busca la asociación con tu Subnet y copia su 'RouteTableAssociationId' como <RT_ASSOC_ID>
 ```
 
 ```bash
