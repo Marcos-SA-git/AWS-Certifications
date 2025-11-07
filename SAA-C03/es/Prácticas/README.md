@@ -56,7 +56,7 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 
 | Nivel | Descripción | Dificultades |
 |:------|:-------------|:-------------|
-| **Nivel 00** | Crea tu primera **VPC pública** y conéctate a un **servidor web**. | [🥉F](./🥉Fácil/Nivel-00.md) · [🥈M](./🥈Medio/Nivel-00.md) · [🥇-D](./🥇Difícil/Nivel-00.md) |
+| **Nivel 00** | Crea tu primera **VPC pública** y conéctate a un **servidor web**. | [🥉F](./🥉Fácil/Nivel-00.md) · [🥈M](./🥈Medio/Nivel-00.md) · [🥇D](./🥇Difícil/Nivel-00.md) |
 | **Nivel 01** | Crea una **VPC privada**, establece un **VPC Peering** y comprueba su **bidireccionalidad**. | [🥉F](./🥉Fácil/Nivel-01.md) · [🥈M](./🥈Medio/Nivel-01.md) · [🥇D](./🥇Difícil/Nivel-01.md) |
 | **Nivel 02** | Configura un **NAT Gateway** y proporciona **salida a Internet** a instancias privadas. | [🥉F](./🥉Fácil/Nivel-02.md) · [🥈M](./🥈Medio/Nivel-02.md) · [🥇D](./🥇Difícil/Nivel-02.md) |
 | **Nivel 03** | Crea una **tercera VPC** y conecta servicios mediante un **Interface Endpoint (PrivateLink)**. | [🥉F](./🥉Fácil/Nivel-03.md) · [🥈M](./🥈Medio/Nivel-03.md) · [🥇D](./🥇Difícil/Nivel-03.md) |
