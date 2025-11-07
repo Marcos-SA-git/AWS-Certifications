@@ -12,7 +12,7 @@ Construir una **VPC** con **subred pública**, **Internet Gateway**, **tabla de 
 
 ### 🧱 Requisitos previos
 
-- Tener acceso a la **Consola de AWS** en una región (ejemplo: **us-east-1**).
+- Tener acceso a la **Consola de AWS** en una región (ejemplo: **eu-east-1**).
 - No necesitas par de claves si no vas a hacer SSH en este nivel (usaremos **User data**).
 - Mantén **siempre la misma región** en toda la práctica.
 
@@ -27,12 +27,12 @@ title: "Nivel 00 — Objetivo final"
 graph BT
 
 subgraph AWS[AWS]
-    IGW[Internet Gateway]
-    subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-        RT[RT-Publica<br>0.0.0.0/0 -> IGW]
-        subgraph SUB["Subnet publica (10.0.1.0/24)"]
-            EC2[EC2-WebPublica<br>HTTP:80]
-            SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
+    IGW[IGW-Publica-GUI]
+    subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+        RT[RT-Publica-GUI<br>0.0.0.0/0 -> IGW-Publica-GUI]
+        subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
+            EC2[EC2-WebPublica-GUI<br>HTTP:80]
+            SG[SG-WebPublica-GUI<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
         end
     end
 end
@@ -53,7 +53,7 @@ PC  -->|"Consulta por HTTP a servidor web en AWS"| Internet
 
 1. En la consola: **VPC** → **Your VPCs** → **Create VPC**.
 2. **Resources to create**: marca **VPC only**.
-3. **Name tag**: `VPC-Publica`
+3. **Name tag**: `VPC-Publica-GUI`
 4. **IPv4 CIDR**: `10.0.0.0/16`
 5. Deja el resto por defecto → **Create VPC**.
 
@@ -65,7 +65,7 @@ title: "Nivel 00 — Paso 1: VPC creada"
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
   end
 end
 ```
@@ -75,9 +75,9 @@ end
 ### 🔧 Paso 2 — Crear la Subnet pública
 
 1. **Subnets** → **Create subnet**.
-2. **VPC ID**: selecciona `VPC-Publica`.
-3. **Subnet name**: `subnet-pub-a`
-4. **Availability Zone**: `us-east-1a` (o la que prefieras en tu región).
+2. **VPC ID**: selecciona `VPC-Publica-GUI`.
+3. **Subnet name**: `subnet-pub-a-GUI`
+4. **Availability Zone**: `eu-east-1a` (o la que prefieras en tu región).
 5. **IPv4 CIDR block**: `10.0.1.0/24`
 6. **Create subnet**.
 7. (Opcional) Activa la IP pública por defecto: Subnet → **Edit subnet settings** → **Enable auto-assign public IPv4 address** → **Save**.
@@ -91,8 +91,8 @@ title: "Nivel 00 — Paso 2: Subnet pública dentro de la VPC"
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    subgraph SUB["Subnet publica (10.0.1.0/24)"]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
     end
   end
 end
@@ -103,8 +103,8 @@ end
 ### 🔧 Paso 3 — Crear y adjuntar el Internet Gateway (IGW)
 
 1. **Internet Gateways** → **Create internet gateway**.
-2. **Name tag**: `IGW-Publica` → **Create internet gateway**.
-3. Selecciónalo → **Actions** → **Attach to VPC** → `VPC-Publica` → **Attach**.
+2. **Name tag**: `IGW-Publica-GUI` → **Create internet gateway**.
+3. Selecciónalo → **Actions** → **Attach to VPC** → `VPC-Publica-GUI` → **Attach**.
 
 **Progresión (tras paso 3):**
 
@@ -114,9 +114,9 @@ title: "Nivel 00 — Paso 3: IGW adjunto a la VPC"
 ---
 graph BT
 subgraph AWS[AWS]
-  IGW[Internet Gateway]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    subgraph SUB["Subnet publica (10.0.1.0/24)"]
+  IGW[IGW-Publica-GUI]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
     end
   end
 end
@@ -128,12 +128,12 @@ IGW --> VPC
 ### 🔧 Paso 4 — Crear Route Table pública y asociarla a la Subnet
 
 1. **Route Tables** → **Create route table**.
-2. **Name**: `RT-Publica` → **VPC**: `VPC-Publica` → **Create route table**.
+2. **Name**: `RT-Publica-GUI` → **VPC**: `VPC-Publica-GUI` → **Create route table**.
 3. Pestaña **Routes** → **Edit routes** → **Add route**:
    - **Destination**: `0.0.0.0/0`
-   - **Target**: selecciona **Internet Gateway** → `IGW-Publica`
+   - **Target**: selecciona **Internet Gateway** → `IGW-Publica-GUI`
    - **Save changes**
-4. Pestaña **Subnet associations** → **Edit subnet associations** → marca `subnet-pub-a` → **Save associations**.
+4. Pestaña **Subnet associations** → **Edit subnet associations** → marca `subnet-pub-a-GUI` → **Save associations**.
 
 **Progresión (tras paso 4):**
 
@@ -143,10 +143,10 @@ title: "Nivel 00 — Paso 4: RT pública con salida al IGW"
 ---
 graph BT
 subgraph AWS[AWS]
-  IGW[Internet Gateway]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
-    subgraph SUB["Subnet publica (10.0.1.0/24)"]
+  IGW[IGW-Publica-GUI]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    RT[RT-Publica-GUI<br>0.0.0.0/0 -> IGW-Publica-GUI]
+    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
     end
   end
 end
@@ -159,9 +159,9 @@ RT --> SUB
 ### 🔧 Paso 5 — Crear el Security Group para HTTP
 
 1. **Security Groups** → **Create security group**.
-2. **Security group name**: `SG-WebPublica`
-3. **Description**: `SG web publico Nivel 00`
-4. **VPC**: `VPC-Publica`
+2. **Security group name**: `SG-WebPublica-GUI`
+3. **Description**: `SG web publico Nivel 00 (GUI)`
+4. **VPC**: `VPC-Publica-GUI`
 5. **Inbound rules** → **Add rule**:
    - **Type**: `HTTP`
    - **Port range**: `80` (se rellena solo)
@@ -177,11 +177,11 @@ title: "Nivel 00 — Paso 5: SG de web creado"
 ---
 graph BT
 subgraph AWS[AWS]
-  IGW[Internet Gateway]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
-    subgraph SUB["Subnet_publica(10.0.1.0/24)"]
-      SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
+  IGW[IGW-Publica-GUI]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    RT[RT-Publica-GUI<br>0.0.0.0/0 -> IGW-Publica-GUI]
+    subgraph SUB["Subnet_publica-GUI (10.0.1.0/24)"]
+      SG[SG-WebPublica-GUI<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
     end
   end
 end
@@ -194,15 +194,15 @@ RT --> SUB
 ### 🔧 Paso 6 — Lanzar la EC2 con User data (Apache)
 
 1. **EC2** → **Instances** → **Launch instances**.
-2. **Name**: `EC2-WebPublica`
+2. **Name**: `EC2-WebPublica-GUI`
 3. **Application and OS Images (AMI)**: **Amazon Linux 2023**
 4. **Instance type**: `t2.micro` (o `t3.micro` si está disponible)
 5. **Key pair (login)**: `Proceed without a key pair` (en este nivel no haremos SSH)
 6. **Network settings**:
-   - **VPC**: `VPC-Publica`
-   - **Subnet**: `subnet-pub-a`
+   - **VPC**: `VPC-Publica-GUI`
+   - **Subnet**: `subnet-pub-a-GUI`
    - **Auto-assign public IP**: `Enable` (si no lo habilitaste en la Subnet)
-   - **Firewall (security groups)**: **Select existing** → `SG-WebPublica`
+   - **Firewall (security groups)**: **Select existing** → `SG-WebPublica-GUI`
 7. **Advanced details** → **User data** (pega el siguiente script):
    - Instala Apache y publica una página simple.
 8. **Launch instance**.
@@ -258,12 +258,12 @@ title: "Nivel 00 — Paso 6: EC2 desplegada con SG y RT"
 ---
 graph BT
 subgraph AWS[AWS]
-  IGW[Internet Gateway]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
-    subgraph SUB["Subnet publica (10.0.1.0/24)"]
-      EC2[EC2-WebPublica<br>HTTP:80]
-      SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
+  IGW[IGW-Publica-GUI]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    RT[RT-Publica-GUI<br>0.0.0.0/0 -> IGW-Publica-GUI]
+    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
+      EC2[EC2-WebPublica-GUI<br>HTTP:80]
+      SG[SG-WebPublica-GUI<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
     end
   end
 end
@@ -276,10 +276,10 @@ SG --> EC2
 
 ### 🔎 Paso 7 — Verificación
 
-1. En **EC2 → Instances**, abre `EC2-WebPublica`.
+1. En **EC2 → Instances**, abre `EC2-WebPublica-GUI`.
 2. Copia la **IPv4 Public IP**.
 3. Prueba en tu navegador: `http://IP_PUBLICA`
-4. Deberías ver: **“Bienvenido a mi primer servidor en AWS”**.  
+4. Deberías ver: **“Bienvenido a mi primer servidor en AWS”**.
    (También puedes probar con `curl` desde tu PC.)
 
 **Progresión (verificación):**
@@ -291,12 +291,12 @@ title: "Nivel 00 — Paso 7: Acceso HTTP desde Internet y tu PC"
 graph BT
 
 subgraph AWS[AWS]
-  IGW[Internet Gateway]
-  subgraph VPC["VPC-Publica (10.0.0.0/16)"]
-    RT[RT-Publica<br>0.0.0.0/0 -> IGW]
-    subgraph SUB["Subnet publica (10.0.1.0/24)"]
-      EC2[EC2-WebPublica<br>HTTP:80]
-      SG[Security Group web<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
+  IGW[IGW-Publica-GUI]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    RT[RT-Publica-GUI<br>0.0.0.0/0 -> IGW-Publica-GUI]
+    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
+      EC2[EC2-WebPublica-GUI<br>HTTP:80]
+      SG[SG-WebPublica-GUI<br>IN 80 TCP 0.0.0.0/0<br>OUT all 0.0.0.0/0]
     end
   end
 end
@@ -316,7 +316,7 @@ PC -->|"GET / HTTP"| Internet
 ### 🧯 Problemas típicos
 
 - No abre la web: revisa **SG** (entrada **HTTP 80** desde `0.0.0.0/0`).
-- Sin salida a Internet: revisa **Route Table** (ruta `0.0.0.0/0 → IGW`) y **asociación** a la Subnet.
+- Sin salida a Internet: revisa **Route Table** (ruta `0.0.0.0/0 → IGW-Publica-GUI`) y **asociación** a la Subnet.
 - Página en blanco: comprueba en la instancia (System Log) si el **User data** se ejecutó:
   - `cloud-init-output.log` (en **EC2 → Instance → Monitor and troubleshoot → System log**).
 
@@ -324,12 +324,12 @@ PC -->|"GET / HTTP"| Internet
 
 ### 🧹 Limpieza (GUI)
 
-1. **EC2 → Instances**: selecciona `EC2-WebPublica` → **Instance state** → **Terminate instance**.
-2. **Security Groups**: borra `SG-WebPublica`.
-3. **Route Tables**: desasocia la Subnet y borra `RT-Publica`.
-4. **Internet Gateways**: **Detach** de `VPC-Publica` y **Delete** `IGW-Publica`.
-5. **Subnets**: borra `subnet-pub-a`.
-6. **VPCs**: borra `VPC-Publica`.
+1. **EC2 → Instances**: selecciona `EC2-WebPublica-GUI` → **Instance state** → **Terminate instance**.
+2. **Security Groups**: borra `SG-WebPublica-GUI`.
+3. **Route Tables**: desasocia la Subnet y borra `RT-Publica-GUI`.
+4. **Internet Gateways**: **Detach** de `VPC-Publica-GUI` y **Delete** `IGW-Publica-GUI`.
+5. **Subnets**: borra `subnet-pub-a-GUI`.
+6. **VPCs**: borra `VPC-Publica-GUI`.
 
 ---
 ---
@@ -342,11 +342,11 @@ PC -->|"GET / HTTP"| Internet
 Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 
 > Trabajaremos desde **AWS CloudShell** (icono de terminal en la parte superior de la consola).  
-> CloudShell ya viene autenticado con tus permisos y usa la **misma región** que tengas seleccionada en la consola. En esta guía incluimos `--region us-east-1` para dejarlo explícito.
+> CloudShell ya viene autenticado con tus permisos y usa la **misma región** que tengas seleccionada en la consola. En esta guía incluimos `--region eu-east-1` para dejarlo explícito.
 
 ### 🧱 Requisitos previos (CLI)
 
-- Abre **CloudShell** en la **misma región** donde hiciste la GUI (ej.: **us-east-1**).
+- Abre **CloudShell** en la **misma región** donde hiciste la GUI (ej.: **eu-east-1**).
 - No necesitas par de claves (no haremos SSH).
 
 ---
@@ -354,11 +354,11 @@ Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 ### 🔎 Paso 0 — Comprobar identidad y región
 
 ```bash
-aws sts get-caller-identity --region us-east-1
+aws sts get-caller-identity --region eu-east-1
 aws configure get region
 ```
 
-*(Estos comandos confirman quién eres y qué región usa tu CLI. Si `aws configure get region` no devuelve nada, los siguientes comandos usarán `--region us-east-1` explícito.)*
+*(Estos comandos confirman quién eres y qué región usa tu CLI. Si `aws configure get region` no devuelve nada, los siguientes comandos usarán `--region eu-east-1` explícito.)*
 
 ---
 
@@ -367,11 +367,11 @@ aws configure get region
 ```bash
 aws ec2 create-vpc \
   --cidr-block 10.0.0.0/16 \
-  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Publica}]' \
-  --region us-east-1
+  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Publica-CLI}]' \
+  --region eu-east-1
 ```
 
-- **Qué hace:** crea una VPC con CIDR `10.0.0.0/16` y etiqueta **Name=VPC-Publica**.
+- **Qué hace:** crea una VPC con CIDR `10.0.0.0/16` y etiqueta **Name=VPC-Publica-CLI**.
 - **Salida importante:** copia el valor `VpcId` (ej.: `vpc-0abc...`). Lo usaremos como **<VPC_ID>** en los siguientes pasos.
 
 ---
@@ -382,12 +382,12 @@ aws ec2 create-vpc \
 aws ec2 create-subnet \
   --vpc-id <VPC_ID> \
   --cidr-block 10.0.1.0/24 \
-  --availability-zone us-east-1a \
-  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-pub-a}]' \
-  --region us-east-1
+  --availability-zone eu-east-1a \
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-pub-a-CLI}]' \
+  --region eu-east-1
 ```
 
-- **Qué hace:** crea la Subnet `10.0.1.0/24` en la AZ `us-east-1a` dentro de tu VPC y la etiqueta con **Name=subnet-pub-a**.
+- **Qué hace:** crea la Subnet `10.0.1.0/24` en la AZ `eu-east-1a` dentro de tu VPC y la etiqueta con **Name=subnet-pub-a-CLI**.
 - **Salida importante:** copia `SubnetId` (ej.: `subnet-0abc...`) como **<SUBNET_ID>**.
 
 *(Opcional) Asignar IP pública automática en la Subnet:*
@@ -396,7 +396,7 @@ aws ec2 create-subnet \
 aws ec2 modify-subnet-attribute \
   --subnet-id <SUBNET_ID> \
   --map-public-ip-on-launch \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 - **Qué hace:** hace que las instancias de esta Subnet reciban IP pública por defecto.
@@ -407,18 +407,18 @@ aws ec2 modify-subnet-attribute \
 
 ```bash
 aws ec2 create-internet-gateway \
-  --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Publica}]' \
-  --region us-east-1
+  --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Publica-CLI}]' \
+  --region eu-east-1
 ```
 
-- **Qué hace:** crea un IGW etiquetado **Name=IGW-Publica**.
+- **Qué hace:** crea un IGW etiquetado **Name=IGW-Publica-CLI**.
 - **Salida importante:** copia `InternetGatewayId` como **<IGW_ID>**.
 
 ```bash
 aws ec2 attach-internet-gateway \
   --internet-gateway-id <IGW_ID> \
   --vpc-id <VPC_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 - **Qué hace:** adjunta el IGW a tu VPC.
@@ -430,11 +430,11 @@ aws ec2 attach-internet-gateway \
 ```bash
 aws ec2 create-route-table \
   --vpc-id <VPC_ID> \
-  --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica}]' \
-  --region us-east-1
+  --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica-CLI}]' \
+  --region eu-east-1
 ```
 
-- **Qué hace:** crea una tabla de rutas en tu VPC con etiqueta **Name=RT-Publica**.
+- **Qué hace:** crea una tabla de rutas en tu VPC con etiqueta **Name=RT-Publica-CLI**.
 - **Salida importante:** copia `RouteTableId` como **<RT_ID>**.
 
 ```bash
@@ -442,19 +442,19 @@ aws ec2 create-route \
   --route-table-id <RT_ID> \
   --destination-cidr-block 0.0.0.0/0 \
   --gateway-id <IGW_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
-- **Qué hace:** añade la ruta por defecto `0.0.0.0/0 → IGW`.
+- **Qué hace:** añade la ruta por defecto `0.0.0.0/0 → IGW-Publica-CLI`.
 
 ```bash
 aws ec2 associate-route-table \
   --subnet-id <SUBNET_ID> \
   --route-table-id <RT_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
-- **Qué hace:** asocia la Subnet a la **RT-Publica** (para que use la salida al IGW).
+- **Qué hace:** asocia la Subnet a la **RT-Publica-CLI** (para que use la salida al IGW).
 
 ---
 
@@ -462,13 +462,13 @@ aws ec2 associate-route-table \
 
 ```bash
 aws ec2 create-security-group \
-  --group-name SG-WebPublica \
-  --description "SG web publico Nivel 00" \
+  --group-name SG-WebPublica-CLI \
+  --description "SG web publico Nivel 00 (CLI)" \
   --vpc-id <VPC_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
-- **Qué hace:** crea un SG llamado **SG-WebPublica** en tu VPC.
+- **Qué hace:** crea un SG llamado **SG-WebPublica-CLI** en tu VPC.
 - **Salida importante:** copia `GroupId` como **<SG_ID>**.
 
 ```bash
@@ -476,13 +476,13 @@ aws ec2 authorize-security-group-ingress \
   --group-id <SG_ID> \
   --protocol tcp --port 80 \
   --cidr 0.0.0.0/0 \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 - **Qué hace:** permite tráfico **HTTP (80)** desde cualquier origen (**Internet**).
 - **Outbound:** por defecto está en **allow all** (suficiente para este nivel).
 
-*(Opcional) Permitir SSH (22) solo desde tu IP pública:*
+> *(Opcional) Permitir SSH (22) solo desde tu IP pública:)*
 
 ```bash
 # Obtén tu IP pública y añade /32 manualmente; reemplaza <TU_IP_PUBLICA/32> abajo
@@ -490,7 +490,7 @@ aws ec2 authorize-security-group-ingress \
   --group-id <SG_ID> \
   --protocol tcp --port 22 \
   --cidr <TU_IP_PUBLICA/32> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 ---
@@ -518,10 +518,10 @@ EOF
 ```bash
 aws ssm get-parameters \
   --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64 \
-  --region us-east-1
+  --region eu-east-1
 ```
 
-- **Qué hace:** devuelve un JSON con la AMI más reciente.  
+- **Qué hace:** devuelve un JSON con la AMI más reciente.
   Copia el valor de `Parameters[0].Value` como **<AMI_ID>**.
 
 ---
@@ -536,8 +536,8 @@ aws ec2 run-instances \
   --associate-public-ip-address \
   --security-group-ids <SG_ID> \
   --user-data file://user-data.sh \
-  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-WebPublica}]' \
-  --region us-east-1
+  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-WebPublica-CLI}]' \
+  --region eu-east-1
 ```
 
 - **Qué hace cada parámetro principal:**
@@ -547,12 +547,12 @@ aws ec2 run-instances \
   - `--associate-public-ip-address`: fuerza IP pública al lanzar.
   - `--security-group-ids`: SG con HTTP 80 abierto.
   - `--user-data`: script para instalar y arrancar Apache.
-  - `--tag-specifications`: etiqueta **Name=EC2-WebPublica**.
+  - `--tag-specifications`: etiqueta **Name=EC2-WebPublica-CLI**.
 
 **Esperar a que esté en running:**
 
 ```bash
-aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica" --region us-east-1
+aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" --region eu-east-1
 # Revisa 'State.Name' en la salida JSON hasta ver 'running'
 ```
 
@@ -560,8 +560,8 @@ aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica" --reg
 
 ```bash
 aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=EC2-WebPublica" \
-  --region us-east-1
+  --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" \
+  --region eu-east-1
 # Copia el campo 'PublicIpAddress' manualmente como <PUBLIC_IP>
 ```
 
@@ -593,15 +593,15 @@ curl http://<PUBLIC_IP>
 
 ```bash
 aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=EC2-WebPublica" \
-  --region us-east-1
+  --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" \
+  --region eu-east-1
 # Copia manualmente el 'InstanceId' como <INSTANCE_ID>
 ```
 
 ```bash
 aws ec2 terminate-instances \
   --instance-ids <INSTANCE_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 #### 2) Borrar Security Group
@@ -609,26 +609,26 @@ aws ec2 terminate-instances \
 ```bash
 aws ec2 delete-security-group \
   --group-id <SG_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 #### 3) Desasociar y borrar Route Table
 
 ```bash
-aws ec2 describe-route-tables --route-table-ids <RT_ID> --region us-east-1
+aws ec2 describe-route-tables --route-table-ids <RT_ID> --region eu-east-1
 # Busca la asociación con tu Subnet y copia su 'RouteTableAssociationId' como <RT_ASSOC_ID>
 ```
 
 ```bash
 aws ec2 disassociate-route-table \
   --association-id <RT_ASSOC_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 ```bash
 aws ec2 delete-route-table \
   --route-table-id <RT_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 #### 4) Desacoplar y borrar IGW
@@ -637,13 +637,13 @@ aws ec2 delete-route-table \
 aws ec2 detach-internet-gateway \
   --internet-gateway-id <IGW_ID> \
   --vpc-id <VPC_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 ```bash
 aws ec2 delete-internet-gateway \
   --internet-gateway-id <IGW_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 #### 5) Borrar Subnet y VPC
@@ -651,13 +651,13 @@ aws ec2 delete-internet-gateway \
 ```bash
 aws ec2 delete-subnet \
   --subnet-id <SUBNET_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 ```bash
 aws ec2 delete-vpc \
   --vpc-id <VPC_ID> \
-  --region us-east-1
+  --region eu-east-1
 ```
 
 #### 6) Limpiar archivo local
