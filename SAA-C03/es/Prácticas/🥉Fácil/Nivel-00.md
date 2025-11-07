@@ -12,7 +12,7 @@ Construir una **VPC** con **subred pública**, **Internet Gateway**, **tabla de 
 
 ### 🧱 Requisitos previos
 
-- Tener acceso a la **Consola de AWS** en una región (ejemplo: **eu-east-1**).
+- Tener acceso a la **Consola de AWS** en una región (ejemplo: **us-east-1**).
 - No necesitas par de claves si no vas a hacer SSH en este nivel (usaremos **User data**).
 - Mantén **siempre la misma región** en toda la práctica.
 
@@ -77,7 +77,7 @@ end
 1. **Subnets** → **Create subnet**.
 2. **VPC ID**: selecciona `VPC-Publica-GUI`.
 3. **Subnet name**: `subnet-pub-a-GUI`
-4. **Availability Zone**: `eu-east-1a` (o la que prefieras en tu región).
+4. **Availability Zone**: `us-east-1a` (o la que prefieras en tu región).
 5. **IPv4 CIDR block**: `10.0.1.0/24`
 6. **Create subnet**.
 7. (Opcional) Activa la IP pública por defecto: Subnet → **Edit subnet settings** → **Enable auto-assign public IPv4 address** → **Save**.
@@ -366,11 +366,11 @@ PC -->|"GET / HTTP"| Internet
 Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 
 > Trabajaremos desde **AWS CloudShell** (icono de terminal en la parte superior de la consola).  
-> CloudShell ya viene autenticado con tus permisos y usa la **misma región** que tengas seleccionada en la consola. En esta guía incluimos `--region eu-east-1` para dejarlo explícito.
+> CloudShell ya viene autenticado con tus permisos y usa la **misma región** que tengas seleccionada en la consola. En esta guía incluimos `--region us-east-1` para dejarlo explícito.
 
 ### 🧱 Requisitos previos (CLI)
 
-- Abre **CloudShell** en la **misma región** donde hiciste la GUI (ej.: **eu-east-1**).
+- Abre **CloudShell** en la **misma región** donde hiciste la GUI (ej.: **us-east-1**).
 - No necesitas par de claves (no haremos SSH).
 
 ---
@@ -378,11 +378,11 @@ Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 ### 🔎 Paso 0 — Comprobar identidad y región
 
 ```bash
-aws sts get-caller-identity --region eu-east-1
+aws sts get-caller-identity --region us-east-1
 aws configure get region
 ```
 
-*(Estos comandos confirman quién eres y qué región usa tu CLI. Si `aws configure get region` no devuelve nada, los siguientes comandos usarán `--region eu-east-1` explícito.)*
+*(Estos comandos confirman quién eres y qué región usa tu CLI. Si `aws configure get region` no devuelve nada, los siguientes comandos usarán `--region us-east-1` explícito.)*
 
 ---
 
@@ -392,7 +392,7 @@ aws configure get region
 aws ec2 create-vpc \
   --cidr-block 10.0.0.0/16 \
   --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Publica-CLI}]' \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** crea una VPC con CIDR `10.0.0.0/16` y etiqueta **Name=VPC-Publica-CLI**.
@@ -406,12 +406,12 @@ aws ec2 create-vpc \
 aws ec2 create-subnet \
   --vpc-id <VPC_ID> \
   --cidr-block 10.0.1.0/24 \
-  --availability-zone eu-east-1a \
+  --availability-zone us-east-1a \
   --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-pub-a-CLI}]' \
-  --region eu-east-1
+  --region us-east-1
 ```
 
-- **Qué hace:** crea la Subnet `10.0.1.0/24` en la AZ `eu-east-1a` dentro de tu VPC y la etiqueta con **Name=subnet-pub-a-CLI**.
+- **Qué hace:** crea la Subnet `10.0.1.0/24` en la AZ `us-east-1a` dentro de tu VPC y la etiqueta con **Name=subnet-pub-a-CLI**.
 - **Salida importante:** copia `SubnetId` (ej.: `subnet-0abc...`) como **<SUBNET_ID>**.
 
 *(Opcional) Asignar IP pública automática en la Subnet:*
@@ -420,7 +420,7 @@ aws ec2 create-subnet \
 aws ec2 modify-subnet-attribute \
   --subnet-id <SUBNET_ID> \
   --map-public-ip-on-launch \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** hace que las instancias de esta Subnet reciban IP pública por defecto.
@@ -432,7 +432,7 @@ aws ec2 modify-subnet-attribute \
 ```bash
 aws ec2 create-internet-gateway \
   --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Publica-CLI}]' \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** crea un IGW etiquetado **Name=IGW-Publica-CLI**.
@@ -442,7 +442,7 @@ aws ec2 create-internet-gateway \
 aws ec2 attach-internet-gateway \
   --internet-gateway-id <IGW_ID> \
   --vpc-id <VPC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** adjunta el IGW a tu VPC.
@@ -455,7 +455,7 @@ aws ec2 attach-internet-gateway \
 aws ec2 create-route-table \
   --vpc-id <VPC_ID> \
   --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica-CLI}]' \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** crea una tabla de rutas en tu VPC con etiqueta **Name=RT-Publica-CLI**.
@@ -466,7 +466,7 @@ aws ec2 create-route \
   --route-table-id <RT_ID> \
   --destination-cidr-block 0.0.0.0/0 \
   --gateway-id <IGW_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** añade la ruta por defecto `0.0.0.0/0 → IGW-Publica-CLI`.
@@ -475,7 +475,7 @@ aws ec2 create-route \
 aws ec2 associate-route-table \
   --subnet-id <SUBNET_ID> \
   --route-table-id <RT_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** asocia la Subnet a la **RT-Publica-CLI** (para que use la salida al IGW).
@@ -489,7 +489,7 @@ aws ec2 create-security-group \
   --group-name SG-WebPublica-CLI \
   --description "SG web publico Nivel 00 (CLI)" \
   --vpc-id <VPC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** crea un SG llamado **SG-WebPublica-CLI** en tu VPC.
@@ -500,7 +500,7 @@ aws ec2 authorize-security-group-ingress \
   --group-id <SG_ID> \
   --protocol tcp --port 80 \
   --cidr 0.0.0.0/0 \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** permite tráfico **HTTP (80)** desde cualquier origen (**Internet**).
@@ -514,7 +514,7 @@ aws ec2 authorize-security-group-ingress \
   --group-id <SG_ID> \
   --protocol tcp --port 22 \
   --cidr <TU_IP_PUBLICA/32> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ---
@@ -542,7 +542,7 @@ EOF
 ```bash
 aws ssm get-parameters \
   --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64 \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace:** devuelve un JSON con la AMI más reciente.
@@ -561,7 +561,7 @@ aws ec2 run-instances \
   --security-group-ids <SG_ID> \
   --user-data file://user-data.sh \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-WebPublica-CLI}]' \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 - **Qué hace cada parámetro principal:**
@@ -576,7 +576,7 @@ aws ec2 run-instances \
 **Esperar a que esté en running:**
 
 ```bash
-aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" --region eu-east-1
+aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" --region us-east-1
 # Revisa 'State.Name' en la salida JSON hasta ver 'running'
 ```
 
@@ -585,7 +585,7 @@ aws ec2 describe-instances --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" -
 ```bash
 aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" \
-  --region eu-east-1
+  --region us-east-1
 # Copia el campo 'PublicIpAddress' manualmente como <PUBLIC_IP>
 ```
 
@@ -618,14 +618,14 @@ curl http://<PUBLIC_IP>
 ```bash
 aws ec2 describe-instances \
   --filters "Name=tag:Name,Values=EC2-WebPublica-CLI" \
-  --region eu-east-1
+  --region us-east-1
 # Copia manualmente el 'InstanceId' como <INSTANCE_ID>
 ```
 
 ```bash
 aws ec2 terminate-instances \
   --instance-ids <INSTANCE_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 #### 2) Borrar Security Group
@@ -633,26 +633,26 @@ aws ec2 terminate-instances \
 ```bash
 aws ec2 delete-security-group \
   --group-id <SG_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 #### 3) Desasociar y borrar Route Table
 
 ```bash
-aws ec2 describe-route-tables --route-table-ids <RT_ID> --region eu-east-1
+aws ec2 describe-route-tables --route-table-ids <RT_ID> --region us-east-1
 # Busca la asociación con tu Subnet y copia su 'RouteTableAssociationId' como <RT_ASSOC_ID>
 ```
 
 ```bash
 aws ec2 disassociate-route-table \
   --association-id <RT_ASSOC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ```bash
 aws ec2 delete-route-table \
   --route-table-id <RT_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 #### 4) Desacoplar y borrar IGW
@@ -661,13 +661,13 @@ aws ec2 delete-route-table \
 aws ec2 detach-internet-gateway \
   --internet-gateway-id <IGW_ID> \
   --vpc-id <VPC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ```bash
 aws ec2 delete-internet-gateway \
   --internet-gateway-id <IGW_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 #### 5) Borrar Subnet y VPC
@@ -675,13 +675,13 @@ aws ec2 delete-internet-gateway \
 ```bash
 aws ec2 delete-subnet \
   --subnet-id <SUBNET_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ```bash
 aws ec2 delete-vpc \
   --vpc-id <VPC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 #### 6) Limpiar archivo local
