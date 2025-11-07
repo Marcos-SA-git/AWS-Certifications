@@ -56,17 +56,17 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 
 | Nivel | Descripción | Dificultades |
 |:------|:-------------|:-------------|
-| **Nivel 00** | Crea tu primera **VPC pública** y conéctate a un **servidor web**. | [F](./Fácil/Nivel-00.md) · [M](./Medio/Nivel-00.md) · [D](./Difícil/Nivel-00.md) |
-| **Nivel 01** | Crea una **VPC privada**, establece un **VPC Peering** y comprueba su **bidireccionalidad**. | [F](./Fácil/Nivel-01.md) · [M](./Medio/Nivel-01.md) · [D](./Difícil/Nivel-01.md) |
-| **Nivel 02** | Configura un **NAT Gateway** y proporciona **salida a Internet** a instancias privadas. | [F](./Fácil/Nivel-02.md) · [M](./Medio/Nivel-02.md) · [D](./Difícil/Nivel-02.md) |
-| **Nivel 03** | Crea una **tercera VPC** y conecta servicios mediante un **Interface Endpoint (PrivateLink)**. | [F](./Fácil/Nivel-03.md) · [M](./Medio/Nivel-03.md) · [D](./Difícil/Nivel-03.md) |
-| **Nivel 04** | Compara **VPC Peering vs PrivateLink** mediante trazas (`traceroute`) y rutas controladas. | [F](./Fácil/Nivel-04.md) · [M](./Medio/Nivel-04.md) · [D](./Difícil/Nivel-04.md) |
-| **Nivel 05** | Implementa un **Gateway Endpoint** para acceder a **S3 sin salir de AWS**. | [F](./Fácil/Nivel-05.md) · [M](./Medio/Nivel-05.md) · [D](./Difícil/Nivel-05.md) · [R](./Realista/Nivel-05.md) |
-| **Nivel 06** | Diseña una **VPC transitiva** y analiza el **flujo de tráfico entre redes**. | [F](./Fácil/Nivel-06.md) · [M](./Medio/Nivel-06.md) · [D](./Difícil/Nivel-06.md) · [R](./Realista/Nivel-06.md) |
-| **Nivel 07** | Crea una **cuarta VPC** con **DHCP Option Set** y personaliza su dominio interno. | [F](./Fácil/Nivel-07.md) · [M](./Medio/Nivel-07.md) · [D](./Difícil/Nivel-07.md) · [R](./Realista/Nivel-07.md) |
-| **Nivel 08** | Aplica **NACLs y Security Groups** para controlar y auditar el tráfico. | [F](./Fácil/Nivel-08.md) · [M](./Medio/Nivel-08.md) · [D](./Difícil/Nivel-08.md) · [R](./Realista/Nivel-08.md) |
-| **Nivel 09** | Integra todo lo anterior en una **arquitectura multi-VPC completa**. | [F](./Fácil/Nivel-09.md) · [M](./Medio/Nivel-09.md) · [D](./Difícil/Nivel-09.md) · [R](./Realista/Nivel-09.md) |
-| **MiniBoss 1 ⛳** | Integración total de redes y conectividad privada. | [R](./Realista/MiniBoss-1.md) |
+| **Nivel 00** | Crea tu primera **VPC pública** y conéctate a un **servidor web**. | [F](./A - Fácil/Nivel-00.md) · [M](./B - Medio/Nivel-00.md) · [D](./C - Difícil/Nivel-00.md) |
+| **Nivel 01** | Crea una **VPC privada**, establece un **VPC Peering** y comprueba su **bidireccionalidad**. | [F](./A - Fácil/Nivel-01.md) · [M](./B - Medio/Nivel-01.md) · [D](./C - Difícil/Nivel-01.md) |
+| **Nivel 02** | Configura un **NAT Gateway** y proporciona **salida a Internet** a instancias privadas. | [F](./A - Fácil/Nivel-02.md) · [M](./B - Medio/Nivel-02.md) · [D](./C - Difícil/Nivel-02.md) |
+| **Nivel 03** | Crea una **tercera VPC** y conecta servicios mediante un **Interface Endpoint (PrivateLink)**. | [F](./A - Fácil/Nivel-03.md) · [M](./B - Medio/Nivel-03.md) · [D](./C - Difícil/Nivel-03.md) |
+| **Nivel 04** | Compara **VPC Peering vs PrivateLink** mediante trazas (`traceroute`) y rutas controladas. | [F](./A - Fácil/Nivel-04.md) · [M](./B - Medio/Nivel-04.md) · [D](./C - Difícil/Nivel-04.md) |
+| **Nivel 05** | Implementa un **Gateway Endpoint** para acceder a **S3 sin salir de AWS**. | [F](./A - Fácil/Nivel-05.md) · [M](./B - Medio/Nivel-05.md) · [D](./C - Difícil/Nivel-05.md) · [R](./D - Realista/Nivel-05.md) |
+| **Nivel 06** | Diseña una **VPC transitiva** y analiza el **flujo de tráfico entre redes**. | [F](./A - Fácil/Nivel-06.md) · [M](./B - Medio/Nivel-06.md) · [D](./C - Difícil/Nivel-06.md) · [R](./D - Realista/Nivel-06.md) |
+| **Nivel 07** | Crea una **cuarta VPC** con **DHCP Option Set** y personaliza su dominio interno. | [F](./A - Fácil/Nivel-07.md) · [M](./B - Medio/Nivel-07.md) · [D](./C - Difícil/Nivel-07.md) · [R](./D - Realista/Nivel-07.md) |
+| **Nivel 08** | Aplica **NACLs y Security Groups** para controlar y auditar el tráfico. | [F](./A - Fácil/Nivel-08.md) · [M](./B - Medio/Nivel-08.md) · [D](./C - Difícil/Nivel-08.md) · [R](./D - Realista/Nivel-08.md) |
+| **Nivel 09** | Integra todo lo anterior en una **arquitectura multi-VPC completa**. | [F](./A - Fácil/Nivel-09.md) · [M](./B - Medio/Nivel-09.md) · [D](./C - Difícil/Nivel-09.md) · [R](./D - Realista/Nivel-09.md) |
+| **MiniBoss 1 ⛳** | Integración total de redes y conectividad privada. | [R](./D - Realista/MiniBoss-1.md) |
 
 ---
 
@@ -74,14 +74,14 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 
 | Nivel | Descripción | Dificultades |
 |:------|:-------------|:-------------|
-| **Nivel 10** | Descripción | [F](./Fácil/Nivel-10.md) · [M](./Medio/Nivel-10.md) · [D](./Difícil/Nivel-10.md) |
-| **Nivel 11** | Descripción | [F](./Fácil/Nivel-11.md) · [M](./Medio/Nivel-11.md) · [D](./Difícil/Nivel-11.md) |
-| **Nivel 12** | Descripción | [F](./Fácil/Nivel-12.md) · [M](./Medio/Nivel-12.md) · [D](./Difícil/Nivel-12.md) |
-| **Nivel 13** | Descripción | [F](./Fácil/Nivel-13.md) · [M](./Medio/Nivel-13.md) · [D](./Difícil/Nivel-13.md) |
-| **Nivel 14** | Descripción | [F](./Fácil/Nivel-14.md) · [M](./Medio/Nivel-14.md) · [D](./Difícil/Nivel-14.md) |
-| **Nivel 15** | Descripción | [F](./Fácil/Nivel-15.md) · [M](./Medio/Nivel-15.md) · [D](./Difícil/Nivel-15.md) |
-| **Nivel 16** | Descripción | [F](./Fácil/Nivel-16.md) · [M](./Medio/Nivel-16.md) · [D](./Difícil/Nivel-16.md) |
-| **Nivel 17** | Descripción | [F](./Fácil/Nivel-17.md) · [M](./Medio/Nivel-17.md) · [D](./Difícil/Nivel-17.md) |
-| **Nivel 18** | Descripción | [F](./Fácil/Nivel-18.md) · [M](./Medio/Nivel-18.md) · [D](./Difícil/Nivel-18.md) |
-| **Nivel 19** | Descripción | [F](./Fácil/Nivel-19.md) · [M](./Medio/Nivel-19.md) · [D](./Difícil/Nivel-19.md) |
-| **MiniBoss 2 ⛳** |  | [R](./Realista/MiniBoss-2.md) |
+| **Nivel 10** | Descripción | [F](./A - Fácil/Nivel-10.md) · [M](./B - Medio/Nivel-10.md) · [D](./C - Difícil/Nivel-10.md) |
+| **Nivel 11** | Descripción | [F](./A - Fácil/Nivel-11.md) · [M](./B - Medio/Nivel-11.md) · [D](./C - Difícil/Nivel-11.md) |
+| **Nivel 12** | Descripción | [F](./A - Fácil/Nivel-12.md) · [M](./B - Medio/Nivel-12.md) · [D](./C - Difícil/Nivel-12.md) |
+| **Nivel 13** | Descripción | [F](./A - Fácil/Nivel-13.md) · [M](./B - Medio/Nivel-13.md) · [D](./C - Difícil/Nivel-13.md) |
+| **Nivel 14** | Descripción | [F](./A - Fácil/Nivel-14.md) · [M](./B - Medio/Nivel-14.md) · [D](./C - Difícil/Nivel-14.md) |
+| **Nivel 15** | Descripción | [F](./A - Fácil/Nivel-15.md) · [M](./B - Medio/Nivel-15.md) · [D](./C - Difícil/Nivel-15.md) |
+| **Nivel 16** | Descripción | [F](./A - Fácil/Nivel-16.md) · [M](./B - Medio/Nivel-16.md) · [D](./C - Difícil/Nivel-16.md) |
+| **Nivel 17** | Descripción | [F](./A - Fácil/Nivel-17.md) · [M](./B - Medio/Nivel-17.md) · [D](./C - Difícil/Nivel-17.md) |
+| **Nivel 18** | Descripción | [F](./A - Fácil/Nivel-18.md) · [M](./B - Medio/Nivel-18.md) · [D](./C - Difícil/Nivel-18.md) |
+| **Nivel 19** | Descripción | [F](./A - Fácil/Nivel-19.md) · [M](./B - Medio/Nivel-19.md) · [D](./C - Difícil/Nivel-19.md) |
+| **MiniBoss 2 ⛳** |  | [R](./D - Realista/MiniBoss-2.md) |
