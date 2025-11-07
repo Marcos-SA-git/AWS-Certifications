@@ -14,7 +14,7 @@ Configurar un **Gateway VPC Endpoint (S3)** asociado a la **tabla de rutas priva
 
 - **VPC-Privada** con **subnet-priv-a** y **RT-Privada** (por defecto: `0.0.0.0/0 → NATGW`).
 - Una instancia en **subnet-priv-a** (p. ej., `EC2-Privada`) para probar conectividad.
-- Región de trabajo coherente (ej.: **eu-east-1**).
+- Región de trabajo coherente (ej.: **us-east-1**).
 
 ---
 
@@ -132,7 +132,7 @@ RT2 --- GWEP
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> CloudShell por defecto. Incluye `--region eu-east-1` **explícito** en todos los comandos. Copia los **IDs** manualmente cuando se indiquen.
+> CloudShell por defecto. Incluye `--region us-east-1` **explícito** en todos los comandos. Copia los **IDs** manualmente cuando se indiquen.
 
 ### 🧱 Requisitos previos (CLI)
 
@@ -144,7 +144,7 @@ RT2 --- GWEP
 ### 🔎 Prechequeo
 
 ```bash
-aws sts get-caller-identity --region eu-east-1
+aws sts get-caller-identity --region us-east-1
 aws configure get region
 ```
 
@@ -156,12 +156,12 @@ aws configure get region
 # Crea un bucket (usa un nombre único en tu cuenta)
 aws s3api create-bucket \
   --bucket <BUCKET_UNICO> \
-  --create-bucket-configuration LocationConstraint=eu-east-1 \
-  --region eu-east-1
+  --create-bucket-configuration LocationConstraint=us-east-1 \
+  --region us-east-1
 
 # Sube un objeto de prueba desde CloudShell
 echo "Objeto de prueba Nivel 5" > objeto.txt
-aws s3 cp objeto.txt s3://<BUCKET_UNICO>/objeto.txt --region eu-east-1
+aws s3 cp objeto.txt s3://<BUCKET_UNICO>/objeto.txt --region us-east-1
 ```
 
 ---
@@ -172,11 +172,11 @@ aws s3 cp objeto.txt s3://<BUCKET_UNICO>/objeto.txt --region eu-east-1
 # Crea el endpoint (tipo Gateway) para S3 en la VPC-Privada
 aws ec2 create-vpc-endpoint \
   --vpc-id <VPC_PRIV_ID> \
-  --service-name com.amazonaws.eu-east-1.s3 \
+  --service-name com.amazonaws.us-east-1.s3 \
   --vpc-endpoint-type Gateway \
   --route-table-ids <RT_PRIV_ID> \
   --tag-specifications 'ResourceType=vpc-endpoint,Tags=[{Key=Name,Value=GWEP-S3-Privada}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia VpcEndpointId como <GWEP_ID>
 ```
 
@@ -186,16 +186,16 @@ aws ec2 create-vpc-endpoint \
 
 ```bash
 # Con NAT activo:
-curl -I http://s3.eu-east-1.amazonaws.com
+curl -I http://s3.us-east-1.amazonaws.com
 curl -I http://example.com
 
 # (Opcional) Elimina temporalmente la ruta por defecto en RT-Privada:
-# aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 0.0.0.0/0 --region eu-east-1
+# aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 0.0.0.0/0 --region us-east-1
 # Ahora:
-curl -I http://s3.eu-east-1.amazonaws.com   # debe responder (403)
+curl -I http://s3.us-east-1.amazonaws.com   # debe responder (403)
 curl -I http://example.com                   # debe fallar
 # Restaura la ruta por defecto al NAT si la quitaste:
-# aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 0.0.0.0/0 --nat-gateway-id <NATGW_ID> --region eu-east-1
+# aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 0.0.0.0/0 --nat-gateway-id <NATGW_ID> --region us-east-1
 ```
 
 ---
@@ -205,7 +205,7 @@ curl -I http://example.com                   # debe fallar
 - Comprueba el **estado** del endpoint:
   
   ```bash
-  aws ec2 describe-vpc-endpoints --vpc-endpoint-ids <GWEP_ID> --region eu-east-1
+  aws ec2 describe-vpc-endpoints --vpc-endpoint-ids <GWEP_ID> --region us-east-1
   ```
 
 - Verifica en **RT-Privada** que apareció una **ruta al Prefix List de S3 (pl-*)** dirigida al **GWEP**.
@@ -218,12 +218,12 @@ curl -I http://example.com                   # debe fallar
 # 1) Eliminar el Gateway Endpoint
 aws ec2 delete-vpc-endpoints \
   --vpc-endpoint-ids <GWEP_ID> \
-  --region eu-east-1
+  --region us-east-1
 
 # 2) (Opcional) Borrar bucket y objeto de prueba
-aws s3 rm s3://<BUCKET_UNICO>/objeto.txt --region eu-east-1
-aws s3api delete-bucket --bucket <BUCKET_UNICO> --region eu-east-1
+aws s3 rm s3://<BUCKET_UNICO>/objeto.txt --region us-east-1
+aws s3api delete-bucket --bucket <BUCKET_UNICO> --region us-east-1
 
 # 3) Asegúrate de que RT-Privada conserva la ruta por defecto a NATGW si la tocaste
-# aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 0.0.0.0/0 --nat-gateway-id <NATGW_ID> --region eu-east-1
+# aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 0.0.0.0/0 --nat-gateway-id <NATGW_ID> --region us-east-1
 ```

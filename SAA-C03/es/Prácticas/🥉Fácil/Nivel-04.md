@@ -17,7 +17,7 @@ Se realizarán **trazas** y pruebas de **resolución/encaminamiento** para obser
 
 ### 🧱 Requisitos previos
 
-- Estado final del **Nivel 3** en la misma región (ej.: **eu-east-1**).
+- Estado final del **Nivel 3** en la misma región (ej.: **us-east-1**).
 - `VPCE-Privada-Servicios` funcionando y `EC2-Privada` accesible (vía bastión o consola).
 
 ---
@@ -168,7 +168,7 @@ Desde `EC2-Privada`:
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> CloudShell por defecto. Incluye `--region eu-east-1` **explícito** en todos los comandos. Copia los **IDs** manualmente (`<PCX_ID>`, `<RT_PRIV_ID>`, `<RT_SVC_PUB_ID>`, etc.). Sin funciones ni pipes avanzados.
+> CloudShell por defecto. Incluye `--region us-east-1` **explícito** en todos los comandos. Copia los **IDs** manualmente (`<PCX_ID>`, `<RT_PRIV_ID>`, `<RT_SVC_PUB_ID>`, etc.). Sin funciones ni pipes avanzados.
 
 ### 🧱 Requisitos previos (CLI)
 
@@ -179,7 +179,7 @@ Desde `EC2-Privada`:
 ### 🔎 Prechequeo
 
 ```bash
-aws sts get-caller-identity --region eu-east-1
+aws sts get-caller-identity --region us-east-1
 aws configure get region
 ```
 
@@ -192,12 +192,12 @@ aws ec2 create-vpc-peering-connection \
   --vpc-id <VPC_PRIV_ID> \
   --peer-vpc-id <VPC_SVC_ID> \
   --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=PCX-Pri-Svc}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia VpcPeeringConnectionId como <PCX_PRI_SVC_ID>
 
 aws ec2 accept-vpc-peering-connection \
   --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ---
@@ -210,14 +210,14 @@ aws ec2 create-route \
   --route-table-id <RT_PRIV_ID> \
   --destination-cidr-block 10.2.0.0/16 \
   --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
-  --region eu-east-1
+  --region us-east-1
 
 # En RT-Publica-Servicios (VPC-Servicios) añadir 10.1.0.0/16 -> PCX-Pri-Svc
 aws ec2 create-route \
   --route-table-id <RT_SVC_PUB_ID> \
   --destination-cidr-block 10.1.0.0/16 \
   --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ---
@@ -230,7 +230,7 @@ aws ec2 authorize-security-group-ingress \
   --group-id <SG_SVC_ID> \
   --protocol tcp --port 80 \
   --cidr 10.1.0.0/16 \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ---
@@ -266,9 +266,9 @@ curl -sI http://10.2.1.X
 
 ```bash
 # 1) Quitar rutas de peering
-aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.2.0.0/16 --region eu-east-1
-aws ec2 delete-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.2.0.0/16 --region us-east-1
+aws ec2 delete-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region us-east-1
 
 # 2) Borrar peering Pri↔Svc
-aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id <PCX_PRI_SVC_ID> --region eu-east-1
+aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id <PCX_PRI_SVC_ID> --region us-east-1
 ```

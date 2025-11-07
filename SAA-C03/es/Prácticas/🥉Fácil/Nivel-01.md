@@ -12,7 +12,7 @@ Partiendo del resultado del **Nivel 0 (VPC-Publica, subnet-pub-a, RT-Publica, IG
 
 ### 🧱 Requisitos previos
 
-- Haber completado el **Nivel 0** en la misma región (ej.: **eu-east-1**).
+- Haber completado el **Nivel 0** en la misma región (ej.: **us-east-1**).
 - Contar con **EC2-WebPublica** en ejecución y su **SG-WebPublica**.
 - Si vas a usar SSH para verificar, añade **TCP 22** a **SG-WebPublica** solo desde **tu IP /32**.
 
@@ -63,7 +63,7 @@ PCX --- VPC2
 1. **VPC** → **Your VPCs** → **Create VPC** → **VPC only**.
 2. **Name tag**: `VPC-Privada` — **IPv4 CIDR**: `10.1.0.0/16` → **Create VPC**.
 3. **Subnets** → **Create subnet** → **VPC**: `VPC-Privada`.
-4. **Subnet name**: `subnet-priv-a` — **AZ**: `eu-east-1a` — **CIDR**: `10.1.1.0/24` → **Create subnet**.
+4. **Subnet name**: `subnet-priv-a` — **AZ**: `us-east-1a` — **CIDR**: `10.1.1.0/24` → **Create subnet**.
 5. **NO** actives **auto-assign public IPv4** en esta subnet.
 
 **Progresión (tras paso 1):**
@@ -248,7 +248,7 @@ EC2PUB -->|"Éxito = rutas en ambos sentidos"| PCX
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> CloudShell por defecto. Comandos con `--region eu-east-1` **explícito** en todos los comandos. Copia los IDs manualmente (N0–N4 sin funciones ni variables avanzadas).
+> CloudShell por defecto. Comandos con `--region us-east-1` **explícito** en todos los comandos. Copia los IDs manualmente (N0–N4 sin funciones ni variables avanzadas).
 
 ### 🧱 Requisitos previos (CLI)
 
@@ -257,7 +257,7 @@ EC2PUB -->|"Éxito = rutas en ambos sentidos"| PCX
 ### 🔎 Prechequeo
 
 ```bash
-aws sts get-caller-identity --region eu-east-1
+aws sts get-caller-identity --region us-east-1
 aws configure get region
 ```
 
@@ -269,27 +269,27 @@ aws configure get region
 aws ec2 create-vpc \
   --cidr-block 10.1.0.0/16 \
   --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Privada}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia VpcId como <VPC_PRIV_ID>
 
 aws ec2 create-subnet \
   --vpc-id <VPC_PRIV_ID> \
   --cidr-block 10.1.1.0/24 \
-  --availability-zone eu-east-1a \
+  --availability-zone us-east-1a \
   --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-priv-a}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia SubnetId como <SUBNET_PRIV_ID>
 
 aws ec2 create-route-table \
   --vpc-id <VPC_PRIV_ID> \
   --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Privada}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia RouteTableId como <RT_PRIV_ID>
 
 aws ec2 associate-route-table \
   --subnet-id <SUBNET_PRIV_ID> \
   --route-table-id <RT_PRIV_ID> \
-  --region eu-east-1
+  --region us-east-1
 # Copia AssociationId como <RT_PRIV_ASSOC_ID>
 ```
 
@@ -302,18 +302,18 @@ aws ec2 create-security-group \
   --group-name SG-Privada \
   --description "SG privada ICMP desde VPC-Publica" \
   --vpc-id <VPC_PRIV_ID> \
-  --region eu-east-1
+  --region us-east-1
 # Copia GroupId como <SG_PRIV_ID>
 
 aws ec2 authorize-security-group-ingress \
   --group-id <SG_PRIV_ID> \
   --ip-permissions IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges='[{CidrIp=10.0.0.0/16,Description=ICMP-desde-VPC-Publica}]' \
-  --region eu-east-1
+  --region us-east-1
 
 # Lanza EC2-Privada (sin IP pública)
 aws ssm get-parameters \
   --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64 \
-  --region eu-east-1
+  --region us-east-1
 # Copia Parameters[0].Value como <AMI_ID>
 
 aws ec2 run-instances \
@@ -323,12 +323,12 @@ aws ec2 run-instances \
   --no-associate-public-ip-address \
   --security-group-ids <SG_PRIV_ID> \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-Privada}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia InstanceId como <INSTANCE_PRIV_ID>
 
 aws ec2 describe-instances \
   --instance-ids <INSTANCE_PRIV_ID> \
-  --region eu-east-1
+  --region us-east-1
 # Copia PrivateIpAddress como <PRIVATE_IP_PRIVADA>
 ```
 
@@ -342,27 +342,27 @@ aws ec2 create-vpc-peering-connection \
   --vpc-id <VPC_PUB_ID> \
   --peer-vpc-id <VPC_PRIV_ID> \
   --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=PCX-Publica-Privada}]' \
-  --region eu-east-1
+  --region us-east-1
 # Copia VpcPeeringConnectionId como <PCX_ID>
 
 # Acepta el peering
 aws ec2 accept-vpc-peering-connection \
   --vpc-peering-connection-id <PCX_ID> \
-  --region eu-east-1
+  --region us-east-1
 
 # Añade ruta en RT-Publica (hacia 10.1.0.0/16 via PCX)
 aws ec2 create-route \
   --route-table-id <RT_PUB_ID> \
   --destination-cidr-block 10.1.0.0/16 \
   --vpc-peering-connection-id <PCX_ID> \
-  --region eu-east-1
+  --region us-east-1
 
 # Añade ruta en RT-Privada (hacia 10.0.0.0/16 via PCX)
 aws ec2 create-route \
   --route-table-id <RT_PRIV_ID> \
   --destination-cidr-block 10.0.0.0/16 \
   --vpc-peering-connection-id <PCX_ID> \
-  --region eu-east-1
+  --region us-east-1
 ```
 
 ---
@@ -391,23 +391,23 @@ ping -c 3 <PRIVATE_IP_PRIVADA>
 
 ```bash
 # 1) Quitar rutas de peering
-aws ec2 delete-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region eu-east-1
-aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.0.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region us-east-1
+aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.0.0.0/16 --region us-east-1
 
 # 2) Borrar peering
-aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id <PCX_ID> --region eu-east-1
+aws ec2 delete-vpc-peering-connection --vpc-peering-connection-id <PCX_ID> --region us-east-1
 
 # 3) Instancia privada
-aws ec2 terminate-instances --instance-ids <INSTANCE_PRIV_ID> --region eu-east-1
+aws ec2 terminate-instances --instance-ids <INSTANCE_PRIV_ID> --region us-east-1
 
 # 4) SG privada
-aws ec2 delete-security-group --group-id <SG_PRIV_ID> --region eu-east-1
+aws ec2 delete-security-group --group-id <SG_PRIV_ID> --region us-east-1
 
 # 5) RT privada (desasociar si procede)
-aws ec2 disassociate-route-table --association-id <RT_PRIV_ASSOC_ID> --region eu-east-1
-aws ec2 delete-route-table --route-table-id <RT_PRIV_ID> --region eu-east-1
+aws ec2 disassociate-route-table --association-id <RT_PRIV_ASSOC_ID> --region us-east-1
+aws ec2 delete-route-table --route-table-id <RT_PRIV_ID> --region us-east-1
 
 # 6) Subnet y VPC privada
-aws ec2 delete-subnet --subnet-id <SUBNET_PRIV_ID> --region eu-east-1
-aws ec2 delete-vpc --vpc-id <VPC_PRIV_ID> --region eu-east-1
+aws ec2 delete-subnet --subnet-id <SUBNET_PRIV_ID> --region us-east-1
+aws ec2 delete-vpc --vpc-id <VPC_PRIV_ID> --region us-east-1
 ```
