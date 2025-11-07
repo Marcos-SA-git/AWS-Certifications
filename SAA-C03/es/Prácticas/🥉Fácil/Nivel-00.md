@@ -88,11 +88,15 @@ end
 ```mermaid
 ---
 title: "Nivel 00 — Paso 2: Subnet pública dentro de la VPC"
+config:
+  flowchart:
+    subGraphTitleMargin:
+      bottom: 20
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC["VPC-Publica-GUI_(10.0.0.0/16)"]
-    subgraph SUB["Subnet publica-GUI(10.0.1.0/24)"]
+  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
+    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
     end
   end
 end
@@ -111,6 +115,10 @@ end
 ```mermaid
 ---
 title: "Nivel 00 — Paso 3: IGW adjunto a la VPC"
+config:
+  flowchart:
+    subGraphTitleMargin:
+      bottom: 20
 ---
 graph BT
 subgraph AWS[AWS]
@@ -140,6 +148,10 @@ IGW --> VPC
 ```mermaid
 ---
 title: "Nivel 00 — Paso 4: RT pública con salida al IGW"
+config:
+  flowchart:
+    subGraphTitleMargin:
+      bottom: 20
 ---
 graph BT
 subgraph AWS[AWS]
@@ -174,6 +186,10 @@ RT --> SUB
 ```mermaid
 ---
 title: "Nivel 00 — Paso 5: SG de web creado"
+config:
+  flowchart:
+    subGraphTitleMargin:
+      bottom: 20
 ---
 graph BT
 subgraph AWS[AWS]
@@ -255,6 +271,10 @@ systemctl start httpd
 ```mermaid
 ---
 title: "Nivel 00 — Paso 6: EC2 desplegada con SG y RT"
+config:
+  flowchart:
+    subGraphTitleMargin:
+      bottom: 20
 ---
 graph BT
 subgraph AWS[AWS]
@@ -287,6 +307,10 @@ SG --> EC2
 ```mermaid
 ---
 title: "Nivel 00 — Paso 7: Acceso HTTP desde Internet y tu PC"
+config:
+  flowchart:
+    subGraphTitleMargin:
+      bottom: 20
 ---
 graph BT
 
