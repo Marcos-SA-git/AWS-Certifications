@@ -24,7 +24,7 @@ Construir una **VPC** con **subred pública**, **Internet Gateway**, **tabla de 
 ---
 title: "Nivel 00 — Objetivo final"
 ---
-graph BT
+graph
 
 subgraph AWS[AWS]
     IGW[IGW-Publica-GUI]
@@ -40,11 +40,11 @@ end
 Internet[Internet]
 PC[Tu ordenador]
 
-IGW --> VPC
-RT --> SUB
+VPC --> IGW
+RT ---> SUB
 SG ---> EC2
-Internet --> IGW
-PC  -->|"Consulta por HTTP a servidor web en AWS"| Internet
+IGW <---> Internet
+Internet  <--->|"Consulta por HTTP a servidor web en AWS"| PC
 ```
 
 ---
@@ -91,8 +91,8 @@ title: "Nivel 00 — Paso 2: Subnet pública dentro de la VPC"
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC["VPC-Publica-GUI (10.0.0.0/16)"]
-    subgraph SUB["Subnet publica-GUI (10.0.1.0/24)"]
+  subgraph VPC["VPC-Publica-GUI_(10.0.0.0/16)"]
+    subgraph SUB["Subnet publica-GUI(10.0.1.0/24)"]
     end
   end
 end
