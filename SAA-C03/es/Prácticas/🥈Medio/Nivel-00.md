@@ -15,7 +15,7 @@ Construir una **VPC** con **subred pública**, **Internet Gateway**, **tabla de 
 
 ### 🧱 Requisitos previos
 
-- Haber iniciado sesión en la **Consola de AWS** (ejemplo de región: **eu-west-1**).
+- Haber iniciado sesión en la **Consola de AWS** (ejemplo de región: **eu-east-1**).
 - Usaremos **User data** para instalar el servidor web (no es necesario SSH).
 
 ---

@@ -91,7 +91,7 @@ PCX --- VPC2
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> Ejecuta todo desde **AWS CloudShell** y **añade tu región manualmente** a cada comando (por ejemplo, `--region eu-west-1`). Los comandos base no incluyen parámetros.
+> Ejecuta todo desde **AWS CloudShell** y **añade tu región manualmente** a cada comando (por ejemplo, `--region eu-east-1`). Los comandos base no incluyen parámetros.
 
 ---
 

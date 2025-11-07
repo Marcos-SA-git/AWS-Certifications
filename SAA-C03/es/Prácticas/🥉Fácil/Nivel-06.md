@@ -204,7 +204,7 @@ VPC1 --> VPC3
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> CloudShell por defecto. Comandos con `--region eu-west-1` **explícito**. A partir del Nivel 6 puedes ver pequeñas “píldoras pro” (consultas con `--query`) para inspección. Copia IDs/DNS manualmente como `<PLACEHOLDER>`.
+> CloudShell por defecto. Comandos con `--region eu-east-1` **explícito**. A partir del Nivel 6 puedes ver pequeñas “píldoras pro” (consultas con `--query`) para inspección. Copia IDs/DNS manualmente como `<PLACEHOLDER>`.
 
 ### 🧱 Requisitos previos (CLI)
 
@@ -215,7 +215,7 @@ VPC1 --> VPC3
 ### 🔎 Prechequeo
 
 ```bash
-aws sts get-caller-identity --region eu-west-1
+aws sts get-caller-identity --region eu-east-1
 aws configure get region
 ```
 
@@ -227,7 +227,7 @@ aws configure get region
 aws ec2 create-transit-gateway \
   --description "TGW-Central" \
   --tag-specifications 'ResourceType=transit-gateway,Tags=[{Key=Name,Value=TGW-Central}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia TransitGatewayId como <TGW_ID>
 
 aws ec2 create-transit-gateway-vpc-attachment \
@@ -235,7 +235,7 @@ aws ec2 create-transit-gateway-vpc-attachment \
   --vpc-id <VPC_PUB_ID> \
   --subnet-ids <SUBNET_PUB_ID> \
   --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Publica}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia TransitGatewayAttachmentId como <ATT_PUB_ID>
 
 aws ec2 create-transit-gateway-vpc-attachment \
@@ -243,7 +243,7 @@ aws ec2 create-transit-gateway-vpc-attachment \
   --vpc-id <VPC_PRIV_ID> \
   --subnet-ids <SUBNET_PRIV_ID> \
   --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Privada}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia TransitGatewayAttachmentId como <ATT_PRIV_ID>
 
 aws ec2 create-transit-gateway-vpc-attachment \
@@ -251,7 +251,7 @@ aws ec2 create-transit-gateway-vpc-attachment \
   --vpc-id <VPC_SVC_ID> \
   --subnet-ids <SUBNET_SVC_ID> \
   --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia TransitGatewayAttachmentId como <ATT_SVC_ID>
 ```
 
@@ -263,38 +263,38 @@ aws ec2 create-transit-gateway-vpc-attachment \
 aws ec2 create-transit-gateway-route-table \
   --transit-gateway-id <TGW_ID> \
   --tag-specifications 'ResourceType=transit-gateway-route-table,Tags=[{Key=Name,Value=TGW-RT-Compartida}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia TransitGatewayRouteTableId como <TGW_RT_ID>
 
 aws ec2 associate-transit-gateway-route-table \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --transit-gateway-attachment-id <ATT_PUB_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 associate-transit-gateway-route-table \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --transit-gateway-attachment-id <ATT_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 associate-transit-gateway-route-table \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --transit-gateway-attachment-id <ATT_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 enable-transit-gateway-route-table-propagation \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --transit-gateway-attachment-id <ATT_PUB_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 enable-transit-gateway-route-table-propagation \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --transit-gateway-attachment-id <ATT_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 enable-transit-gateway-route-table-propagation \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --transit-gateway-attachment-id <ATT_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 ```
 
 ---
@@ -303,16 +303,16 @@ aws ec2 enable-transit-gateway-route-table-propagation \
 
 ```bash
 # RT-Publica (VPC-Publica): añade rutas a 10.1/16 y 10.2/16 via TGW
-aws ec2 create-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.1.0.0/16 --transit-gateway-id <TGW_ID> --region eu-west-1
-aws ec2 create-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.2.0.0/16 --transit-gateway-id <TGW_ID> --region eu-west-1
+aws ec2 create-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.1.0.0/16 --transit-gateway-id <TGW_ID> --region eu-east-1
+aws ec2 create-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.2.0.0/16 --transit-gateway-id <TGW_ID> --region eu-east-1
 
 # RT-Privada (VPC-Privada): añade rutas a 10.0/16 y 10.2/16 via TGW (mantén Default->NAT y pl-S3->GWEP)
-aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.0.0.0/16 --transit-gateway-id <TGW_ID> --region eu-west-1
-aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.2.0.0/16 --transit-gateway-id <TGW_ID> --region eu-west-1
+aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.0.0.0/16 --transit-gateway-id <TGW_ID> --region eu-east-1
+aws ec2 create-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.2.0.0/16 --transit-gateway-id <TGW_ID> --region eu-east-1
 
 # RT-Publica-Servicios (VPC-Servicios): añade rutas a 10.0/16 y 10.1/16 via TGW
-aws ec2 create-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.0.0.0/16 --transit-gateway-id <TGW_ID> --region eu-west-1
-aws ec2 create-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.1.0.0/16 --transit-gateway-id <TGW_ID> --region eu-west-1
+aws ec2 create-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.0.0.0/16 --transit-gateway-id <TGW_ID> --region eu-east-1
+aws ec2 create-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.1.0.0/16 --transit-gateway-id <TGW_ID> --region eu-east-1
 ```
 
 ---
@@ -331,7 +331,7 @@ curl -sI http://10.2.1.X
 curl -sI http://<VPCE_DNS_PRIVADO>
 
 # 4) S3 sigue por Gateway Endpoint (403 esperado sin credenciales)
-curl -I http://s3.eu-west-1.amazonaws.com
+curl -I http://s3.eu-east-1.amazonaws.com
 ```
 
 **Píldora pro (inspección TGW):**
@@ -341,14 +341,14 @@ curl -I http://s3.eu-west-1.amazonaws.com
 aws ec2 search-transit-gateway-routes \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --filters Name=type,Values=propagated \
-  --region eu-west-1 \
+  --region eu-east-1 \
   --query "Routes[].{CIDR:DestinationCidrBlock, AttachmentId:TransitGatewayAttachments[0].TransitGatewayAttachmentId}"
 
 # Ver rutas estáticas/activas
 aws ec2 search-transit-gateway-routes \
   --transit-gateway-route-table-id <TGW_RT_ID> \
   --filters Name=state,Values=active \
-  --region eu-west-1 \
+  --region eu-east-1 \
   --query "Routes[].DestinationCidrBlock"
 ```
 
@@ -366,19 +366,19 @@ aws ec2 search-transit-gateway-routes \
 
 ```bash
 # 1) Quitar rutas en VPCs
-aws ec2 delete-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region eu-west-1
-aws ec2 delete-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.2.0.0/16 --region eu-west-1
-aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.0.0.0/16 --region eu-west-1
-aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.2.0.0/16 --region eu-west-1
-aws ec2 delete-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.0.0.0/16 --region eu-west-1
-aws ec2 delete-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region eu-west-1
+aws ec2 delete-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_PUB_ID> --destination-cidr-block 10.2.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.0.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_PRIV_ID> --destination-cidr-block 10.2.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.0.0.0/16 --region eu-east-1
+aws ec2 delete-route --route-table-id <RT_SVC_PUB_ID> --destination-cidr-block 10.1.0.0/16 --region eu-east-1
 
 # 2) Desasociar/propagación (opcional: al borrar attachments ya no aplican)
-aws ec2 delete-transit-gateway-vpc-attachment --transit-gateway-attachment-id <ATT_PUB_ID> --region eu-west-1
-aws ec2 delete-transit-gateway-vpc-attachment --transit-gateway-attachment-id <ATT_PRIV_ID> --region eu-west-1
-aws ec2 delete-transit-gateway-vpc-attachment --transit-gateway-attachment-id <ATT_SVC_ID> --region eu-west-1
+aws ec2 delete-transit-gateway-vpc-attachment --transit-gateway-attachment-id <ATT_PUB_ID> --region eu-east-1
+aws ec2 delete-transit-gateway-vpc-attachment --transit-gateway-attachment-id <ATT_PRIV_ID> --region eu-east-1
+aws ec2 delete-transit-gateway-vpc-attachment --transit-gateway-attachment-id <ATT_SVC_ID> --region eu-east-1
 
 # 3) Borrar TGW RT y TGW
-aws ec2 delete-transit-gateway-route-table --transit-gateway-route-table-id <TGW_RT_ID> --region eu-west-1
-aws ec2 delete-transit-gateway --transit-gateway-id <TGW_ID> --region eu-west-1
+aws ec2 delete-transit-gateway-route-table --transit-gateway-route-table-id <TGW_RT_ID> --region eu-east-1
+aws ec2 delete-transit-gateway --transit-gateway-id <TGW_ID> --region eu-east-1
 ```

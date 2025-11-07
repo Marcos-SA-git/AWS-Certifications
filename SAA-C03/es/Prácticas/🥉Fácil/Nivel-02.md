@@ -14,7 +14,7 @@ En **VPC-Privada**, crear una **subred pública** para el **NAT Gateway**, adjun
 ### 🧱 Requisitos previos
 
 - Haber completado el **Nivel 1** (VPC-Privada con `subnet-priv-a` y `RT-Privada`, peering `PCX-Publica-Privada`, rutas de ida y vuelta entre VPCs).
-- Mantén **la misma región** (ej.: **eu-west-1**).
+- Mantén **la misma región** (ej.: **eu-east-1**).
 
 ---
 
@@ -68,7 +68,7 @@ PCX --- VPC2
 1. **VPC-Privada** → **Subnets** → **Create subnet**:
    - **Name**: `subnet-nat-a`
    - **CIDR**: `10.1.0.0/24` (no solape con `10.1.1.0/24`)
-   - **AZ**: `eu-west-1a` (o tu preferida)
+   - **AZ**: `eu-east-1a` (o tu preferida)
 2. **Subnet settings** → **Enable auto-assign public IPv4** → **Save**.
 3. **Internet Gateways** → **Create internet gateway** → **Name**: `IGW-Privada` → **Create**.
 4. **Attach to VPC** → **VPC-Privada**.
@@ -182,7 +182,7 @@ RT2PRI --> NAT
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> CloudShell por defecto. Incluye `--region eu-west-1` de forma **explícita** en todos los comandos. Copia los IDs manualmente cuando se indiquen.
+> CloudShell por defecto. Incluye `--region eu-east-1` de forma **explícita** en todos los comandos. Copia los IDs manualmente cuando se indiquen.
 
 ### 🧱 Requisitos previos (CLI)
 
@@ -193,7 +193,7 @@ RT2PRI --> NAT
 ### 🔎 Prechequeo
 
 ```bash
-aws sts get-caller-identity --region eu-west-1
+aws sts get-caller-identity --region eu-east-1
 aws configure get region
 ```
 
@@ -205,25 +205,25 @@ aws configure get region
 aws ec2 create-subnet \
   --vpc-id <VPC_PRIV_ID> \
   --cidr-block 10.1.0.0/24 \
-  --availability-zone eu-west-1a \
+  --availability-zone eu-east-1a \
   --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-a}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia SubnetId como <SUBNET_NAT_ID>
 
 aws ec2 modify-subnet-attribute \
   --subnet-id <SUBNET_NAT_ID> \
   --map-public-ip-on-launch \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 create-internet-gateway \
   --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Privada}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia InternetGatewayId como <IGW_PRIV_ID>
 
 aws ec2 attach-internet-gateway \
   --internet-gateway-id <IGW_PRIV_ID> \
   --vpc-id <VPC_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 ```
 
 ---
@@ -234,19 +234,19 @@ aws ec2 attach-internet-gateway \
 aws ec2 create-route-table \
   --vpc-id <VPC_PRIV_ID> \
   --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica-Privada}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia RouteTableId como <RT_PRIV_PUB_ID>
 
 aws ec2 create-route \
   --route-table-id <RT_PRIV_PUB_ID> \
   --destination-cidr-block 0.0.0.0/0 \
   --gateway-id <IGW_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 associate-route-table \
   --subnet-id <SUBNET_NAT_ID> \
   --route-table-id <RT_PRIV_PUB_ID> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia AssociationId como <RT_PRIV_PUB_ASSOC_ID>
 ```
 
@@ -257,21 +257,21 @@ aws ec2 associate-route-table \
 ```bash
 aws ec2 allocate-address \
   --domain vpc \
-  --region eu-west-1
+  --region eu-east-1
 # Copia AllocationId como <EIP_ALLOC_ID>
 
 aws ec2 create-nat-gateway \
   --subnet-id <SUBNET_NAT_ID> \
   --allocation-id <EIP_ALLOC_ID> \
   --tag-specifications 'ResourceType=natgateway,Tags=[{Key=Name,Value=NATGW-Privada}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia NatGatewayId como <NATGW_ID> (espera a estado 'available' antes de seguir)
 
 aws ec2 create-route \
   --route-table-id <RT_PRIV_ID> \
   --destination-cidr-block 0.0.0.0/0 \
   --nat-gateway-id <NATGW_ID> \
-  --region eu-west-1
+  --region eu-east-1
 ```
 
 ---
@@ -303,35 +303,35 @@ curl https://checkip.amazonaws.com
 aws ec2 delete-route \
   --route-table-id <RT_PRIV_ID> \
   --destination-cidr-block 0.0.0.0/0 \
-  --region eu-west-1
+  --region eu-east-1
 
 # 2) Borrar NATGW (puede tardar en 'deleted')
 aws ec2 delete-nat-gateway \
   --nat-gateway-id <NATGW_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 # 3) Liberar la EIP usada por el NAT
 aws ec2 release-address \
   --allocation-id <EIP_ALLOC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 # 4) RT pública de la VPC-Privada (desasocia antes)
 aws ec2 disassociate-route-table \
   --association-id <RT_PRIV_PUB_ASSOC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 aws ec2 delete-route-table \
   --route-table-id <RT_PRIV_PUB_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 # 5) Subnet pública e IGW de la VPC-Privada
 aws ec2 delete-subnet \
   --subnet-id <SUBNET_NAT_ID> \
-  --region eu-west-1
+  --region eu-east-1
 aws ec2 detach-internet-gateway \
   --internet-gateway-id <IGW_PRIV_ID> \
   --vpc-id <VPC_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 aws ec2 delete-internet-gateway \
   --internet-gateway-id <IGW_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 ```

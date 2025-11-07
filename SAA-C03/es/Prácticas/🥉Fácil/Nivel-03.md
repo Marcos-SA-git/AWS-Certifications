@@ -12,7 +12,7 @@ Añadir una **VPC-Servicios** con una instancia sirviendo HTTP detrás de un **N
 
 ### 🧱 Requisitos previos
 
-- Haber completado el **Nivel 2** en la misma región (ej.: **eu-west-1**).
+- Haber completado el **Nivel 2** en la misma región (ej.: **eu-east-1**).
 - Contar con al menos una instancia en **VPC-Privada** (p. ej., `EC2-Privada`) con salida a Internet vía **NAT** (para poder instalar utilidades como `curl` si hace falta).
 
 ---
@@ -85,7 +85,7 @@ NLB --- EC2SVC
    - **CIDR**: `10.2.0.0/16` → **Create VPC**.
 2. **Subnets** → **Create subnet** → VPC: `VPC-Servicios`.  
    - **Name**: `subnet-svc-a`  
-   - **AZ**: `eu-west-1a`  
+   - **AZ**: `eu-east-1a`  
    - **CIDR**: `10.2.1.0/24` → **Create subnet**.
 3. **Internet Gateways** → **Create** → **Name**: `IGW-Servicios` → **Create** → **Attach to VPC**: `VPC-Servicios`.
 4. **Route Tables** → **Create route table** → **Name**: `RT-Publica-Servicios` → VPC: `VPC-Servicios`.  
@@ -235,7 +235,7 @@ NLB --- EC2SVC
 
 ## ⌨️ Usando la CLI en CloudShell (Command Line Interface)
 
-> CloudShell por defecto. Comandos con `--region eu-west-1` **explícito**. En N0–N4 **no** uses funciones, pipes avanzados ni `--query`. Copia IDs/DNS manualmente como `<PLACEHOLDER>`.
+> CloudShell por defecto. Comandos con `--region eu-east-1` **explícito**. En N0–N4 **no** uses funciones, pipes avanzados ni `--query`. Copia IDs/DNS manualmente como `<PLACEHOLDER>`.
 
 ### 🧱 Requisitos previos (CLI)
 
@@ -246,7 +246,7 @@ NLB --- EC2SVC
 ### 🔎 Prechequeo
 
 ```bash
-aws sts get-caller-identity --region eu-west-1
+aws sts get-caller-identity --region eu-east-1
 aws configure get region
 ```
 
@@ -258,43 +258,43 @@ aws configure get region
 aws ec2 create-vpc \
   --cidr-block 10.2.0.0/16 \
   --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia VpcId como <VPC_SVC_ID>
 
 aws ec2 create-subnet \
   --vpc-id <VPC_SVC_ID> \
   --cidr-block 10.2.1.0/24 \
-  --availability-zone eu-west-1a \
+  --availability-zone eu-east-1a \
   --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-svc-a}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia SubnetId como <SUBNET_SVC_ID>
 
 aws ec2 create-internet-gateway \
   --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia InternetGatewayId como <IGW_SVC_ID>
 
 aws ec2 attach-internet-gateway \
   --internet-gateway-id <IGW_SVC_ID> \
   --vpc-id <VPC_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 create-route-table \
   --vpc-id <VPC_SVC_ID> \
   --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia RouteTableId como <RT_SVC_PUB_ID>
 
 aws ec2 create-route \
   --route-table-id <RT_SVC_PUB_ID> \
   --destination-cidr-block 0.0.0.0/0 \
   --gateway-id <IGW_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 aws ec2 associate-route-table \
   --subnet-id <SUBNET_SVC_ID> \
   --route-table-id <RT_SVC_PUB_ID> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia AssociationId como <RT_SVC_PUB_ASSOC_ID>
 ```
 
@@ -307,14 +307,14 @@ aws ec2 create-security-group \
   --group-name SG-ServiciosWeb \
   --description "SG web para servicio PrivateLink" \
   --vpc-id <VPC_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia GroupId como <SG_SVC_ID>
 
 aws ec2 authorize-security-group-ingress \
   --group-id <SG_SVC_ID> \
   --protocol tcp --port 80 \
   --cidr 0.0.0.0/0 \
-  --region eu-west-1
+  --region eu-east-1
 
 # User data para el backend HTTP
 cat > user-data-servicio.sh <<'EOF'
@@ -330,7 +330,7 @@ EOF
 # AMI AL2023
 aws ssm get-parameters \
   --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64 \
-  --region eu-west-1
+  --region eu-east-1
 # Copia Parameters[0].Value como <AMI_ID>
 
 aws ec2 run-instances \
@@ -341,7 +341,7 @@ aws ec2 run-instances \
   --security-group-ids <SG_SVC_ID> \
   --user-data file://user-data-servicio.sh \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia InstanceId como <INSTANCE_SVC_ID>
 ```
 
@@ -357,14 +357,14 @@ aws elbv2 create-target-group \
   --port 80 \
   --vpc-id <VPC_SVC_ID> \
   --target-type instance \
-  --region eu-west-1
+  --region eu-east-1
 # Copia TargetGroupArn como <TG_ARN>
 
 # Registrar instancia
 aws elbv2 register-targets \
   --target-group-arn <TG_ARN> \
   --targets Id=<INSTANCE_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 # NLB interno en la subnet del servicio
 aws elbv2 create-load-balancer \
@@ -372,7 +372,7 @@ aws elbv2 create-load-balancer \
   --type network \
   --scheme internal \
   --subnets <SUBNET_SVC_ID> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia LoadBalancerArn como <NLB_ARN>
 
 # Listener TCP 80 -> TG
@@ -381,7 +381,7 @@ aws elbv2 create-listener \
   --protocol TCP \
   --port 80 \
   --default-actions Type=forward,TargetGroupArn=<TG_ARN> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia ListenerArn como <LISTENER_ARN>
 ```
 
@@ -395,7 +395,7 @@ aws ec2 create-vpc-endpoint-service-configuration \
   --network-load-balancer-arns <NLB_ARN> \
   --acceptance-required \
   --tag-specifications 'ResourceType=vpc-endpoint-service-configuration,Tags=[{Key=Name,Value=ES-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia ServiceId como <ESVC_ID> y ServiceName como <SERVICE_NAME>
 
 # (En VPC-Privada) SG para el Interface Endpoint
@@ -403,14 +403,14 @@ aws ec2 create-security-group \
   --group-name SG-EndpointPrivado \
   --description "SG para VPCE privado hacia ES-Servicios" \
   --vpc-id <VPC_PRIV_ID> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia GroupId como <SG_EP_ID>
 
 aws ec2 authorize-security-group-ingress \
   --group-id <SG_EP_ID> \
   --protocol tcp --port 80 \
   --cidr 10.1.0.0/16 \
-  --region eu-west-1
+  --region eu-east-1
 
 # Crear Interface VPC Endpoint (consumidor en VPC-Privada)
 aws ec2 create-vpc-endpoint \
@@ -420,19 +420,19 @@ aws ec2 create-vpc-endpoint \
   --subnet-ids <SUBNET_PRIV_ID> \
   --security-group-ids <SG_EP_ID> \
   --tag-specifications 'ResourceType=vpc-endpoint,Tags=[{Key=Name,Value=VPCE-Privada-Servicios}]' \
-  --region eu-west-1
+  --region eu-east-1
 # Copia VpcEndpointId como <VPCE_ID>
 
 # Aceptar la conexión en el servicio (proveedor)
 aws ec2 accept-vpc-endpoint-connections \
   --service-id <ESVC_ID> \
   --vpc-endpoint-ids <VPCE_ID> \
-  --region eu-west-1
+  --region eu-east-1
 
 # Obtener los DNS privados del VPCE
 aws ec2 describe-vpc-endpoints \
   --vpc-endpoint-ids <VPCE_ID> \
-  --region eu-west-1
+  --region eu-east-1
 # Copia uno de los 'DnsEntries[].DnsName' como <VPCE_DNS>
 ```
 
@@ -461,27 +461,27 @@ curl http://<VPCE_DNS>
 
 ```bash
 # 1) Eliminar conexión y servicio
-aws ec2 delete-vpc-endpoints --vpc-endpoint-ids <VPCE_ID> --region eu-west-1
-aws ec2 delete-vpc-endpoint-service-configurations --service-ids <ESVC_ID> --region eu-west-1
+aws ec2 delete-vpc-endpoints --vpc-endpoint-ids <VPCE_ID> --region eu-east-1
+aws ec2 delete-vpc-endpoint-service-configurations --service-ids <ESVC_ID> --region eu-east-1
 
 # 2) NLB y Target Group
-aws elbv2 delete-listener --listener-arn <LISTENER_ARN> --region eu-west-1
-aws elbv2 delete-load-balancer --load-balancer-arn <NLB_ARN> --region eu-west-1
+aws elbv2 delete-listener --listener-arn <LISTENER_ARN> --region eu-east-1
+aws elbv2 delete-load-balancer --load-balancer-arn <NLB_ARN> --region eu-east-1
 # (espera a que el NLB esté eliminado)
-aws elbv2 delete-target-group --target-group-arn <TG_ARN> --region eu-west-1
+aws elbv2 delete-target-group --target-group-arn <TG_ARN> --region eu-east-1
 
 # 3) Backend y SGs
-aws ec2 terminate-instances --instance-ids <INSTANCE_SVC_ID> --region eu-west-1
-aws ec2 delete-security-group --group-id <SG_SVC_ID> --region eu-west-1
-aws ec2 delete-security-group --group-id <SG_EP_ID> --region eu-west-1
+aws ec2 terminate-instances --instance-ids <INSTANCE_SVC_ID> --region eu-east-1
+aws ec2 delete-security-group --group-id <SG_SVC_ID> --region eu-east-1
+aws ec2 delete-security-group --group-id <SG_EP_ID> --region eu-east-1
 
 # 4) Red de VPC-Servicios
-aws ec2 disassociate-route-table --association-id <RT_SVC_PUB_ASSOC_ID> --region eu-west-1
-aws ec2 delete-route-table --route-table-id <RT_SVC_PUB_ID> --region eu-west-1
-aws ec2 detach-internet-gateway --internet-gateway-id <IGW_SVC_ID> --vpc-id <VPC_SVC_ID> --region eu-west-1
-aws ec2 delete-internet-gateway --internet-gateway-id <IGW_SVC_ID> --region eu-west-1
-aws ec2 delete-subnet --subnet-id <SUBNET_SVC_ID> --region eu-west-1
-aws ec2 delete-vpc --vpc-id <VPC_SVC_ID> --region eu-west-1
+aws ec2 disassociate-route-table --association-id <RT_SVC_PUB_ASSOC_ID> --region eu-east-1
+aws ec2 delete-route-table --route-table-id <RT_SVC_PUB_ID> --region eu-east-1
+aws ec2 detach-internet-gateway --internet-gateway-id <IGW_SVC_ID> --vpc-id <VPC_SVC_ID> --region eu-east-1
+aws ec2 delete-internet-gateway --internet-gateway-id <IGW_SVC_ID> --region eu-east-1
+aws ec2 delete-subnet --subnet-id <SUBNET_SVC_ID> --region eu-east-1
+aws ec2 delete-vpc --vpc-id <VPC_SVC_ID> --region eu-east-1
 
 # 5) Limpieza de archivos locales
 rm -f user-data-servicio.sh
