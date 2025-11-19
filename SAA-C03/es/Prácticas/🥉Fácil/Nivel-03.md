@@ -4,6 +4,23 @@ Crea una **tercera VPC** para alojar un **servicio interno** y conéctalo desde 
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 03 (us-east-1)
+
+**Clasificación:** Medio (Interface Endpoint).
+
+**Recursos con coste:**
+
+- **Interface Endpoint (PrivateLink):** coste por **AZ/hora** + **GB procesado**.
+
+**Cómo minimizar:**
+
+- Despliega el **VPCE** cuando tengas todo listo y **elimínalo** al terminar.
+- Limítate a **1 AZ** para el lab.
+- Comprueba con peticiones **pequeñas** (cabeceras, `curl -I`).
+- Evita acceso cruzado innecesario entre AZs/VPCs.
+
+---
+
 ## 🖱️ Usando la GUI (Graphical User Interface)
 
 ### 🎯 Objetivo

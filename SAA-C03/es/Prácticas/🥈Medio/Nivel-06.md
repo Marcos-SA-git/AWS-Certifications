@@ -4,6 +4,21 @@ Diseña una **VPC transitiva** con **Transit Gateway** y analiza el **flujo de t
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 06 (us-east-1)
+
+**Clasificación:** Medio–Alto (Transit Gateway).
+
+**Recursos con coste:**
+
+- **Transit Gateway:** coste por **attachment/hora** + **GB**.
+- Varios attachments (3+) incrementan el gasto.
+
+**Cómo minimizar:**
+
+- **Crea TGW y attachments solo para la demo**, y **elimínalos** al cerrar.
+- Usa el número **mínimo** de attachments necesario.
+- Valida con **bajo tráfico** (comandos de control, no transferencias).
+
 ---
 
 ## 🖱️ Usando la GUI (Graphical User Interface)

@@ -4,6 +4,22 @@ Crea una **VPC privada**, establece un **VPC Peering** con tu **VPC pública exi
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 01 (us-east-1)
+
+**Clasificación:** Muy bajo.  
+
+**Recursos con coste:**
+
+- **VPC Peering:** sin coste horario; **sí** puede haber coste por **datos** a través del peering.
+
+**Cómo minimizar:**
+
+- Mantén pruebas de conectividad **ligeras** (pings/`curl -I`).
+- Evita transferir ficheros grandes entre VPCs.
+- Conserva el peering activo (no cobra por hora); borra solo si no lo usarás más.
+
+---
+
 ## 🖱️ Usando la GUI (Graphical User Interface)
 
 ### 🎯 Objetivo

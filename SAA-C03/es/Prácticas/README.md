@@ -68,6 +68,17 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 | **09** | Integra todo lo anterior en una **arquitectura multi-VPC completa**. | 45–180 min | Medio-alto | [🥉F](./🥉Fácil/Nivel-09.md) · [🥈M](./🥈Medio/Nivel-09.md) · [🥇D](./🥇Difícil/Nivel-09.md) · [💎R](./💎Realista/Nivel-09.md) |
 | **MiniBoss 1 ⛳** | Integración total de redes y conectividad privada. | 60–180 min | Medio-alto | [💎R](./💎Realista/MiniBoss-1.md) |
 
+> 💡 **Leyenda de costes (us-east-1, 1–3 h, <1 GB)**
+>
+> - **Muy bajo:** ≤ 0,50 USD • Solo recursos “gratis por hora” (VPC, rutas, SG, peering, GW Endpoint S3) y/o 1 EC2 micro poco tiempo.
+> - **Bajo:** ~0,50–2 USD • 1–2 EC2 micro y/o 1 Interface Endpoint (PrivateLink) en 1 AZ con tráfico mínimo.
+> - **Medio:** ~2–8 USD • 1 NAT Gateway pocas horas **o** varios Interface Endpoints, tráfico ligero.
+> - **Medio-alto:** ~8–20 USD • Transit Gateway con ~3 attachments pocas horas **o** NAT + algunos GB de tráfico.
+> - **Alto:** ≥ 20 USD en un lab corto • Varias horas con TGW/NAT/PrivateLink y/o varios GB transferidos, multi-AZ y múltiples attachments.
+>
+> 📈 **Qué encarece más (orden aproximado):**
+> NAT Gateway (h + GB) > Transit Gateway (attachments/h + GB) > Interface Endpoints (h + GB) > EC2 micro (h, coste pequeño) > Gateway Endpoint S3 (normalmente 0 USD/h).
+
 ---
 
 ### Bloque 2 - Cómputo con EC2 💻
@@ -86,13 +97,4 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 | **19** | Descripción | — | — | [🥉F](./🥉Fácil/Nivel-19.md) · [🥈M](./🥈Medio/Nivel-19.md) · [🥇D](./🥇Difícil/Nivel-19.md) |
 | **MiniBoss 2 ⛳** | — | — | — | [💎R](./💎Realista/MiniBoss-2.md) |
 
-> 💡 **Leyenda de costes (us-east-1, 1–3 h, <1 GB)**
->
-> - **Muy bajo:** ≤ 0,50 USD • Solo recursos “gratis por hora” (VPC, rutas, SG, peering, GW Endpoint S3) y/o 1 EC2 micro poco tiempo.
-> - **Bajo:** ~0,50–2 USD • 1–2 EC2 micro y/o 1 Interface Endpoint (PrivateLink) en 1 AZ con tráfico mínimo.
-> - **Medio:** ~2–8 USD • 1 NAT Gateway pocas horas **o** varios Interface Endpoints, tráfico ligero.
-> - **Medio-alto:** ~8–20 USD • Transit Gateway con ~3 attachments pocas horas **o** NAT + algunos GB de tráfico.
-> - **Alto:** ≥ 20 USD en un lab corto • Varias horas con TGW/NAT/PrivateLink y/o varios GB transferidos, multi-AZ y múltiples attachments.
->
-> 📈 **Qué encarece más (orden aproximado):**
-> NAT Gateway (h + GB) > Transit Gateway (attachments/h + GB) > Interface Endpoints (h + GB) > EC2 micro (h, coste pequeño) > Gateway Endpoint S3 (normalmente 0 USD/h).
+---

@@ -5,6 +5,24 @@ Configura un **NAT Gateway** y proporciona **salida a Internet** a **instancias 
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 02 (us-east-1)
+
+**Clasificación:** Medio (recurso caro por hora).  
+
+**Recursos con coste:**
+
+- **NAT Gateway:** coste por **hora** + por **GB procesado**.
+- **Dirección IPv4 pública (EIP):** coste por hora mientras exista.
+
+**Cómo minimizar:**
+
+- **Crea el NAT GW al final**, prueba y **elimínalo** al cerrar la práctica.
+- **Libera la EIP** asociada si ya no se usa.
+- Usa **una sola AZ** y tráfico mínimo (validaciones con `curl -I`).
+- No dejes rutas a NAT activas si borras el NAT (evita confusión).
+
+---
+
 ## 🖱️ Usando la GUI (Graphical User Interface)
 
 ### 🎯 Objetivo

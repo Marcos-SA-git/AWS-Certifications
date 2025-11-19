@@ -5,6 +5,22 @@ Crea tu primera **VPC pública** y conéctate a un **servidor web** (HTTP)
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 00 (us-east-1)
+
+**Clasificación:** Muy bajo.
+
+**Recursos con coste:**
+
+- Instancia EC2 (t*-micro) por hora.
+- Tráfico saliente a Internet (si haces pruebas externas).
+
+**Cómo minimizar:**
+
+- Lanza **solo 1** instancia (GUI o CLI) y **termina** al finalizar.
+- Evita EIP dedicada: usa **IP pública automática**.
+- Verifica con `curl -I` y contenido mínimo; evita descargas grandes.
+- Si necesitas pausar, **stop** (pagarás EBS, no cómputo).
+
 ---
 
 ## 🖱️ Usando la GUI (Graphical User Interface)

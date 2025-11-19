@@ -4,6 +4,22 @@ Compara **VPC Peering** vs **PrivateLink (Interface Endpoint)** mediante **traza
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 04 (us-east-1)
+
+**Clasificación:** Bajo–Medio (reutiliza PrivateLink del 03).
+
+**Recursos con coste:**
+
+- Usa el **Interface Endpoint** del nivel 03 si sigue activo; si creas uno nuevo, aplica el coste por hora/GB.
+
+**Cómo minimizar:**
+
+- Ejecuta la comparativa **justo después** del 03 en la **misma sesión**.
+- Mantén las pruebas (traceroute/`curl`) **muy cortas**.
+- **Elimina el VPCE** al finalizar si no se usará más.
+
+---
+
 ## 🖱️ Usando la GUI (Graphical User Interface)
 
 ### 🎯 Objetivo

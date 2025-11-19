@@ -4,6 +4,23 @@ Implementa un **Gateway Endpoint de S3** para que las instancias de **VPC-Privad
 
 **[Enlace rápido al apartado para practicar con CLI](#️-usando-la-cli-en-cloudshell-command-line-interface)**
 
+## ⚠️ Advertencia de costes — 05 (us-east-1)
+
+**Clasificación:** Muy bajo.
+
+**Recursos con coste:**
+
+- **Gateway Endpoint S3:** sin coste por hora.
+- Pueden existir costes por **requests S3** y **datos a Internet** (si aplican).
+
+**Cómo minimizar:**
+
+- Mantén el acceso a S3 **dentro de AWS** (evita salidas a Internet).
+- Haz pruebas con **objetos pequeños** y pocas operaciones.
+- Este endpoint puede **quedarse** activo (no factura por hora).
+
+---
+
 ## 🖱️ Usando la GUI (Graphical User Interface)
 
 ### 🎯 Objetivo
