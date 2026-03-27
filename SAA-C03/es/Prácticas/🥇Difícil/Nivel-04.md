@@ -16,9 +16,9 @@ Demostrar, con **evidencias técnicas**, la diferencia entre:
 - **PCX-Pri-Svc** creado y **rutas** aplicadas en ambas VPCs para sus CIDRs.
 - **SG** ajustados para permitir **TCP 80** donde corresponda.
 - **Pruebas** desde `EC2-Privada`:
-  - **PrivateLink**: `curl` al **DNS privado del VPCE** funciona aunque **no** exista ruta hacia `10.2.0.0/16`.  
-  - **Peering**: `curl` a la **IP privada** del backend en `10.2.1.0/24` funciona **solo** con rutas de **peering** activas.
-  - **Trazas** (`traceroute -T -p 80`) muestran diferencias de **salto**/resolución (limitado por AWS).
+    - **PrivateLink**: `curl` al **DNS privado del VPCE** funciona aunque **no** exista ruta hacia `10.2.0.0/16`.  
+    - **Peering**: `curl` a la **IP privada** del backend en `10.2.1.0/24` funciona **solo** con rutas de **peering** activas.
+    - **Trazas** (`traceroute -T -p 80`) muestran diferencias de **salto**/resolución (limitado por AWS).
 - **Limpieza**: retirada de rutas y borrado de `PCX-Pri-Svc` para volver al estado del **Nivel 3**.
 
 ## 🗺️ Arquitectura objetivo (resultado final)
@@ -31,20 +31,20 @@ title: "Nivel 4 — Objetivo final (Difícil)"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC-Privada["VPC-Privada"]
-    SUBP["subnet-priv-a"]
-    EC2PRI["EC2-Privada"]
-    VPCE["VPCE-Privada-Servicios"]
-  end
+    subgraph VPC-Privada["VPC-Privada"]
+        SUBP["subnet-priv-a"]
+        EC2PRI["EC2-Privada"]
+        VPCE["VPCE-Privada-Servicios"]
+    end
 
-  subgraph VPC-Servicios["VPC-Servicios"]
-    SUBS["subnet-svc-a"]
-    APP["EC2-Servicios:80"]
-    NLB["NLB-Servicios"]
-    ESVC["ES-Servicios"]
-  end
+    subgraph VPC-Servicios["VPC-Servicios"]
+        SUBS["subnet-svc-a"]
+        APP["EC2-Servicios:80"]
+        NLB["NLB-Servicios"]
+        ESVC["ES-Servicios"]
+    end
 
-  PCX["PCX-Pri-Svc"]
+    PCX["PCX-Pri-Svc"]
 end
 
 VPCE --- ESVC

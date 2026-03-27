@@ -41,8 +41,8 @@ Formato seguido en cada lección:
 ⚠️ **Aclaraciones importantes:**
 
 - Se sigue una dinámica híbrida: español para la explicación rápida y comprensión, y terminología oficial en inglés en *cursiva* para identificar los nombres correctos de cara al examen.
-  Se pueden encontrar los apuntes completamente en inglés en el repositorio oficial de GitHub indicado al principio de cada apunte.
-  Esta aproximación permite no solo mentalizar al estudiante para usar el inglés el día del examen (ya que **NO** está disponible en español), sino también para aumentar la accesibilidad de estos apuntes a un nivel más global.
+    Se pueden encontrar los apuntes completamente en inglés en el repositorio oficial de GitHub indicado al principio de cada apunte.
+    Esta aproximación permite no solo mentalizar al estudiante para usar el inglés el día del examen (ya que **NO** está disponible en español), sino también para aumentar la accesibilidad de estos apuntes a un nivel más global.
 
 - Estos apuntes **NO** buscan reemplazar la documentación oficial de AWS, sino complementarla con explicaciones prácticas, ejemplos y reflexiones propias de estudio. De esta forma, sirven tanto para aprobar la certificación como para resolver problemas reales en un entorno profesional.
 

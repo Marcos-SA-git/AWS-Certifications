@@ -42,22 +42,22 @@ title: "Nivel 3 — Objetivo final (Media)"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC2["VPC-Privada (/16)"]
-    RT2["RT-Privada<br>Default -> NATGW"]
-    subgraph SUB2["subnet-priv-a (/24)"]
-      EC2PRI["EC2-Privada"]
-      VPCE["VPCE-Privada-Servicios"]
+    subgraph VPC2["VPC-Privada (/16)"]
+        RT2["RT-Privada<br>Default -> NATGW"]
+        subgraph SUB2["subnet-priv-a (/24)"]
+            EC2PRI["EC2-Privada"]
+            VPCE["VPCE-Privada-Servicios"]
+        end
     end
-  end
-  subgraph VPC3["VPC-Servicios (/16)"]
-    IGW3[IGW-Servicios]
-    RTPUB3["RT-Publica-Servicios<br>Default -> IGW-Servicios"]
-    subgraph SUB3["subnet-svc-a (/24)"]
-      NLB["NLB-Servicios"]
-      ESVC["ES-Servicios"]
-      APP["EC2-Servicios:80"]
+    subgraph VPC3["VPC-Servicios (/16)"]
+        IGW3[IGW-Servicios]
+        RTPUB3["RT-Publica-Servicios<br>Default -> IGW-Servicios"]
+        subgraph SUB3["subnet-svc-a (/24)"]
+            NLB["NLB-Servicios"]
+            ESVC["ES-Servicios"]
+            APP["EC2-Servicios:80"]
+        end
     end
-  end
 end
 
 VPCE --- ESVC

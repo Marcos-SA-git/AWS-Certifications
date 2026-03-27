@@ -1,0 +1,30 @@
+site_name: Homelab de Marcos
+site_url: https://marcos-sa-git.github.io/homelab-docs/
+
+docs_dir: SAA-C03
+
+theme:
+  name: material
+
+extra_css:
+  - css/extra.css
+
+plugins:
+  - search
+  - mermaid2
+  - panzoom:
+      key: none
+      hint_location: bottom
+      full_screen: true
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
+
+nav:
+  - Inicio: README.md
+  - Español: es/README.md
+  - Inglés: en/README.md

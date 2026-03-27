@@ -1,4 +1,3 @@
-
 # 🥈 Nivel 1 — Media
 
 Crea una **VPC privada**, establece un **VPC Peering** con tu **VPC pública existente** y **comprueba su bidireccionalidad**.
@@ -43,20 +42,20 @@ title: "Nivel 1 — Objetivo final (Media)"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC1["VPC-Publica (/16)"]
-    IGW[IGW-Publica]
-    RT1["RT-Publica<br>0.0.0.0/0 -> IGW<br>RUTA -> PCX"]
-    subgraph SUB1["subnet-pub-a (/24)"]
-      EC2PUB["EC2-WebPublica<br>IP privada 10.0.1.x"]
+    subgraph VPC1["VPC-Publica (/16)"]
+        IGW[IGW-Publica]
+        RT1["RT-Publica<br>0.0.0.0/0 -> IGW<br>RUTA -> PCX"]
+        subgraph SUB1["subnet-pub-a (/24)"]
+            EC2PUB["EC2-WebPublica<br>IP privada 10.0.1.x"]
+        end
     end
-  end
-  subgraph VPC2["VPC-Privada (/16 distinto)"]
-    RT2["RT-Privada<br>RUTA -> PCX"]
-    subgraph SUB2["subnet-priv-a (/24)"]
-      EC2PRI["EC2-Privada<br>Sin IP pública"]
+    subgraph VPC2["VPC-Privada (/16 distinto)"]
+        RT2["RT-Privada<br>RUTA -> PCX"]
+        subgraph SUB2["subnet-priv-a (/24)"]
+            EC2PRI["EC2-Privada<br>Sin IP pública"]
+        end
     end
-  end
-  PCX["PCX-Publica-Privada"]
+    PCX["PCX-Publica-Privada"]
 end
 
 IGW --> VPC1

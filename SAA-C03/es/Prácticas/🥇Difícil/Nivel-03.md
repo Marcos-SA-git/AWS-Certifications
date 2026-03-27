@@ -26,18 +26,18 @@ title: "Nivel 3 — Objetivo final (Difícil)"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC-Privada["VPC-Privada"]
-    SUBP["subnet-priv-a"]
-    VPCE["VPCE-Privada-Servicios"]
-    EC2PRI["EC2-Privada"]
-  end
+    subgraph VPC-Privada["VPC-Privada"]
+        SUBP["subnet-priv-a"]
+        VPCE["VPCE-Privada-Servicios"]
+        EC2PRI["EC2-Privada"]
+    end
 
-  subgraph VPC-Servicios["VPC-Servicios"]
-    SUBS["subnet-svc-a"]
-    NLB["NLB-Servicios"]
-    ESVC["ES-Servicios"]
-    APP["EC2-Servicios:80"]
-  end
+    subgraph VPC-Servicios["VPC-Servicios"]
+        SUBS["subnet-svc-a"]
+        NLB["NLB-Servicios"]
+        ESVC["ES-Servicios"]
+        APP["EC2-Servicios:80"]
+    end
 end
 
 VPCE --- ESVC

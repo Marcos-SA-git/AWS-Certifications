@@ -14,8 +14,8 @@ Redirigir el tráfico hacia **S3** desde **VPC-Privada** por la **malla interna 
 - **GWEP-S3-Privada** (tipo **Gateway**, servicio **S3**) creado en **VPC-Privada** y asociado a **RT-Privada**.  
 - **RT-Privada** muestra una **ruta al Prefix List de S3 (pl-*)** apuntando al **Gateway Endpoint**, coexistiendo con `0.0.0.0/0 → NATGW` para el resto de destinos.  
 - **Verificación**:  
-  - Desde `EC2-Privada`, `curl -I http://s3.<region>.amazonaws.com` responde aunque se retire temporalmente la ruta por defecto a NAT.  
-  - Acceso a destinos externos como `example.com` falla sin NAT, confirmando que **S3** fluye por el **Gateway Endpoint**.
+    - Desde `EC2-Privada`, `curl -I http://s3.<region>.amazonaws.com` responde aunque se retire temporalmente la ruta por defecto a NAT.  
+    - Acceso a destinos externos como `example.com` falla sin NAT, confirmando que **S3** fluye por el **Gateway Endpoint**.
 
 ## 🗺️ Arquitectura objetivo (resultado final)
 
@@ -27,10 +27,10 @@ title: "Nivel 5 — Objetivo final (Difícil)"
 graph BT
 
 subgraph VPC-Privada["VPC-Privada"]
-  RT["RT-Privada<br>Default -> NATGW<br>pl-S3 -> GWEP-S3-Privada"]
-  SUB["subnet-priv-a"]
-  EC2["EC2-Privada"]
-  GWEP["GWEP-S3-Privada"]
+    RT["RT-Privada<br>Default -> NATGW<br>pl-S3 -> GWEP-S3-Privada"]
+    SUB["subnet-priv-a"]
+    EC2["EC2-Privada"]
+    GWEP["GWEP-S3-Privada"]
 end
 
 RT --> SUB

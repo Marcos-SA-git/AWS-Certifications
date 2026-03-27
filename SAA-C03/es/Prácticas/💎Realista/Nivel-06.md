@@ -13,9 +13,9 @@
 - Existe un **Transit Gateway** con **attachments** a las tres VPCs y una **tabla de rutas** asociada con **propagación** activa.  
 - Las **Route Tables** de cada VPC encaminan **CIDRs remotos → TGW** y preservan `Default → IGW/NAT` y `pl-S3 → GWEP`.  
 - Desde una instancia en **VPC-Privada**:  
-  - Acceso HTTP por **IP privada** a workloads en **VPC-Publica** y **VPC-Servicios**.  
-  - Acceso a **S3** funciona aun si se **retira temporalmente** la ruta por defecto a NAT.  
-  - Acceso por **PrivateLink** sigue operativo sin depender del TGW.  
+    - Acceso HTTP por **IP privada** a workloads en **VPC-Publica** y **VPC-Servicios**.  
+    - Acceso a **S3** funciona aun si se **retira temporalmente** la ruta por defecto a NAT.  
+    - Acceso por **PrivateLink** sigue operativo sin depender del TGW.  
 - Se entrega **diagrama** y **registro de pruebas** (comandos y resultados).
 
 ## Entregables

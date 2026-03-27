@@ -48,35 +48,35 @@ title: "Nivel 4 — Objetivo final: Rutas controladas para comparar Peering vs P
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC1["VPC-Publica 10.0.0.0/16"]
-    IGW1[IGW-Publica]
-    RT1["RT-Publica<br>Default -> IGW-Publica<br>10.1.0.0/16 -> PCX-Pub-Pri"]
-    subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
-      EC2PUB["EC2-WebPublica"]
+    subgraph VPC1["VPC-Publica 10.0.0.0/16"]
+        IGW1[IGW-Publica]
+        RT1["RT-Publica<br>Default -> IGW-Publica<br>10.1.0.0/16 -> PCX-Pub-Pri"]
+        subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
+            EC2PUB["EC2-WebPublica"]
+        end
     end
-  end
 
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    RT2["RT-Privada<br>Default -> NATGW<br>10.0.0.0/16 -> PCX-Pub-Pri<br>10.2.0.0/16 -> PCX-Pri-Svc"]
-    subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
-      EC2PRI["EC2-Privada"]
-      VPCE["VPCE-Privada-Servicios<br>(Interface Endpoint)"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        RT2["RT-Privada<br>Default -> NATGW<br>10.0.0.0/16 -> PCX-Pub-Pri<br>10.2.0.0/16 -> PCX-Pri-Svc"]
+        subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+            EC2PRI["EC2-Privada"]
+            VPCE["VPCE-Privada-Servicios<br>(Interface Endpoint)"]
+        end
+        NAT["NATGW-Privada"]
     end
-    NAT["NATGW-Privada"]
-  end
 
-  subgraph VPC3["VPC-Servicios 10.2.0.0/16"]
-    RT3["RT-Publica-Servicios<br>Default -> IGW-Servicios<br>10.1.0.0/16 -> PCX-Pri-Svc"]
-    subgraph SUB3["subnet-svc-a 10.2.1.0/24"]
-      EC2SVC["EC2-Servicios:80"]
-      NLB["NLB-Servicios (internal)"]
-      ESVC["ES-Servicios"]
+    subgraph VPC3["VPC-Servicios 10.2.0.0/16"]
+        RT3["RT-Publica-Servicios<br>Default -> IGW-Servicios<br>10.1.0.0/16 -> PCX-Pri-Svc"]
+        subgraph SUB3["subnet-svc-a 10.2.1.0/24"]
+            EC2SVC["EC2-Servicios:80"]
+            NLB["NLB-Servicios (internal)"]
+            ESVC["ES-Servicios"]
+        end
+        IGW3[IGW-Servicios]
     end
-    IGW3[IGW-Servicios]
-  end
 
-  PCX1["PCX-Pub-Pri"]
-  PCX2["PCX-Pri-Svc"]
+    PCX1["PCX-Pub-Pri"]
+    PCX2["PCX-Pri-Svc"]
 end
 
 IGW1 --> VPC1
@@ -108,11 +108,11 @@ NLB --- EC2SVC
 ### 🔧 Paso 2 — Rutas recíprocas para 10.1.0.0/16 ↔ 10.2.0.0/16
 
 1. **RT-Privada** (de `VPC-Privada`) → **Routes → Edit** → **Add route**:
-   - **Destination**: `10.2.0.0/16`
-   - **Target**: `PCX-Pri-Svc` → **Save**.
+    - **Destination**: `10.2.0.0/16`
+    - **Target**: `PCX-Pri-Svc` → **Save**.
 2. **RT-Publica-Servicios** (de `VPC-Servicios`) → **Routes → Edit** → **Add route**:
-   - **Destination**: `10.1.0.0/16`
-   - **Target**: `PCX-Pri-Svc` → **Save**.
+    - **Destination**: `10.1.0.0/16`
+    - **Target**: `PCX-Pri-Svc` → **Save**.
 
 > Mantén **VPCE** operativo (no requiere rutas) para poder comparar ambos caminos.
 
@@ -121,9 +121,9 @@ NLB --- EC2SVC
 ### 🔧 Paso 3 — Ajustes de Security Groups para pruebas
 
 1. En `VPC-Servicios`, en **SG-ServiciosWeb**:
-   - Asegura **HTTP 80** permitido desde `10.1.0.0/16` (traza TCP en puerto 80).
+    - Asegura **HTTP 80** permitido desde `10.1.0.0/16` (traza TCP en puerto 80).
 2. En el **SG del VPCE**:
-   - Asegura **TCP 80** desde `subnet-priv-a` (ya debería estar así desde Nivel 3).
+    - Asegura **TCP 80** desde `subnet-priv-a` (ya debería estar así desde Nivel 3).
 
 ---
 
@@ -132,31 +132,31 @@ NLB --- EC2SVC
 Desde `EC2-Privada`:
 
 - **PrivateLink (DNS del VPCE)**:
-  1. Resuelve el DNS del endpoint y prueba conectividad:
+    1. Resuelve el DNS del endpoint y prueba conectividad:
 
-     ```bash
-     getent hosts <VPCE_DNS_PRIVADO>
-     curl -sI http://<VPCE_DNS_PRIVADO>
-     ```
+         ```bash
+         getent hosts <VPCE_DNS_PRIVADO>
+         curl -sI http://<VPCE_DNS_PRIVADO>
+         ```
 
-  2. Traza hacia el **VPCE** (suele ser 1 salto al ENI del endpoint):
+    2. Traza hacia el **VPCE** (suele ser 1 salto al ENI del endpoint):
 
-     ```bash
-     traceroute -T -p 80 <VPCE_DNS_PRIVADO>
-     ```
+         ```bash
+         traceroute -T -p 80 <VPCE_DNS_PRIVADO>
+         ```
 
 - **Peering (IP privada del backend)**:
-  1. Obtén la **IP privada** de `EC2-Servicios` y pruébala:
+    1. Obtén la **IP privada** de `EC2-Servicios` y pruébala:
 
-     ```bash
-     curl -sI http://10.2.1.X
-     ```
+         ```bash
+         curl -sI http://10.2.1.X
+         ```
 
-  2. Traza hacia la **IP del backend** (ruta vía **PCX-Pri-Svc**):
+    2. Traza hacia la **IP del backend** (ruta vía **PCX-Pri-Svc**):
 
-     ```bash
-     traceroute -T -p 80 10.2.1.X
-     ```
+         ```bash
+         traceroute -T -p 80 10.2.1.X
+         ```
 
 > Nota: En AWS, los routers intermedios normalmente **no** responden a TTL expirado; la traza puede mostrar pocos saltos. Úsala como indicio junto con **resolución DNS**, **IP destino** y **tablas de rutas**.
 
@@ -205,15 +205,15 @@ aws configure get region
 
 ```bash
 aws ec2 create-vpc-peering-connection \
-  --vpc-id <VPC_PRIV_ID> \
-  --peer-vpc-id <VPC_SVC_ID> \
-  --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=PCX-Pri-Svc}]' \
-  --region us-east-1
+    --vpc-id <VPC_PRIV_ID> \
+    --peer-vpc-id <VPC_SVC_ID> \
+    --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=PCX-Pri-Svc}]' \
+    --region us-east-1
 # Copia VpcPeeringConnectionId como <PCX_PRI_SVC_ID>
 
 aws ec2 accept-vpc-peering-connection \
-  --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
-  --region us-east-1
+    --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
+    --region us-east-1
 ```
 
 ---
@@ -223,17 +223,17 @@ aws ec2 accept-vpc-peering-connection \
 ```bash
 # En RT-Privada (VPC-Privada) añadir 10.2.0.0/16 -> PCX-Pri-Svc
 aws ec2 create-route \
-  --route-table-id <RT_PRIV_ID> \
-  --destination-cidr-block 10.2.0.0/16 \
-  --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
-  --region us-east-1
+    --route-table-id <RT_PRIV_ID> \
+    --destination-cidr-block 10.2.0.0/16 \
+    --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
+    --region us-east-1
 
 # En RT-Publica-Servicios (VPC-Servicios) añadir 10.1.0.0/16 -> PCX-Pri-Svc
 aws ec2 create-route \
-  --route-table-id <RT_SVC_PUB_ID> \
-  --destination-cidr-block 10.1.0.0/16 \
-  --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
-  --region us-east-1
+    --route-table-id <RT_SVC_PUB_ID> \
+    --destination-cidr-block 10.1.0.0/16 \
+    --vpc-peering-connection-id <PCX_PRI_SVC_ID> \
+    --region us-east-1
 ```
 
 ---
@@ -243,10 +243,10 @@ aws ec2 create-route \
 ```bash
 # Permitir TCP 80 desde 10.1.0.0/16 en SG-ServiciosWeb (en VPC-Servicios)
 aws ec2 authorize-security-group-ingress \
-  --group-id <SG_SVC_ID> \
-  --protocol tcp --port 80 \
-  --cidr 10.1.0.0/16 \
-  --region us-east-1
+    --group-id <SG_SVC_ID> \
+    --protocol tcp --port 80 \
+    --cidr 10.1.0.0/16 \
+    --region us-east-1
 ```
 
 ---
@@ -269,10 +269,10 @@ curl -sI http://10.2.1.X
 ### 🧯 Troubleshooting rápido
 
 - Verifica con:
-  
-  ```bash
-  ip route get 10.2.1.X
-  ```
+    
+    ```bash
+    ip route get 10.2.1.X
+    ```
 
 - Asegura **TCP 80** permitido en los SGs adecuados y rutas correctas en ambas RT.
 

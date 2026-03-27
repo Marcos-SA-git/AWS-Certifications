@@ -19,7 +19,7 @@ Cada **nivel** amplía y refuerza lo aprendido en los anteriores, formando una r
 Además, puedes elegir la **dificultad** según tu nivel de experiencia o tu objetivo de práctica:
 
 | Dificultad | Descripción |
-|-------------|-------------|
+| ---------- | ----------- |
 | 🟢 **Fácil (F)** 🥉 | Práctica totalmente guiada, con pasos detallados, comandos y resultados esperados. Ideal para tu primer contacto con el tema. |
 | 🟡 **Media (M)** 🥈 | Instrucciones parciales y esquemas visuales; tú decides cómo avanzar. Perfecta para afianzar comprensión. |
 | 🔴 **Difícil (D)** 🥇 | Solo incluye el contexto, un esquema final y los objetivos. Pensada para estudiantes que ya dominan el entorno. |
@@ -55,7 +55,7 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 ### Bloque 1 - VPCs y Redes 🛜
 
 | 🔢 Nivel | 📝 Descripción | ⏱️ Tiempo (min–máx) | 💰 Coste (estim.) | 📚 Dificultades |
-|:-----:|:---------------|:--------------------|:------------------|:----------------|
+| :-----: | :--------------- | :------------------- | :---------------- | :--------------- |
 | **00** | Crea tu primera **VPC pública** y conéctate a un **servidor web**. | 15–60 min | Muy bajo | [🥉F](./🥉Fácil/Nivel-00.md) · [🥈M](./🥈Medio/Nivel-00.md) · [🥇D](./🥇Difícil/Nivel-00.md) |
 | **01** | Crea una **VPC privada**, establece un **VPC Peering** y comprueba su **bidireccionalidad**. | 20–60 min | Muy bajo | [🥉F](./🥉Fácil/Nivel-01.md) · [🥈M](./🥈Medio/Nivel-01.md) · [🥇D](./🥇Difícil/Nivel-01.md) |
 | **02** | Configura un **NAT Gateway** y proporciona **salida a Internet** a instancias privadas. | 25–75 min | Medio (NAT) | [🥉F](./🥉Fácil/Nivel-02.md) · [🥈M](./🥈Medio/Nivel-02.md) · [🥇D](./🥇Difícil/Nivel-02.md) |
@@ -84,7 +84,7 @@ Alternativamente dentro de cada práctica podrás encontrar versiones donde se h
 ### Bloque 2 - Cómputo con EC2 💻
 
 | 🔢 Nivel | 📝 Descripción | ⏱️ Tiempo (min–máx) | 💰 Coste (estim.) | 📚 Dificultades |
-|:-----:|:---------------|:--------------------|:------------------|:----------------|
+| :------: | :-------------- | :------------------ | :----------------- | :-------------- |
 | **10** | Descripción | — | — | [🥉F](./🥉Fácil/Nivel-10.md) · [🥈M](./🥈Medio/Nivel-10.md) · [🥇D](./🥇Difícil/Nivel-10.md) |
 | **11** | Descripción | — | — | [🥉F](./🥉Fácil/Nivel-11.md) · [🥈M](./🥈Medio/Nivel-11.md) · [🥇D](./🥇Difícil/Nivel-11.md) |
 | **12** | Descripción | — | — | [🥉F](./🥉Fácil/Nivel-12.md) · [🥈M](./🥈Medio/Nivel-12.md) · [🥇D](./🥇Difícil/Nivel-12.md) |

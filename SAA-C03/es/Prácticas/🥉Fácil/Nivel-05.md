@@ -45,14 +45,14 @@ title: "Nivel 5 — Objetivo final: Gateway Endpoint de S3 en VPC-Privada"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    RT2["RT-Privada<br>0.0.0.0/0 -> NATGW<br>pl-S3 -> GWEP-S3-Privada"]
-    subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
-      EC2PRI["EC2-Privada"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        RT2["RT-Privada<br>0.0.0.0/0 -> NATGW<br>pl-S3 -> GWEP-S3-Privada"]
+        subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+            EC2PRI["EC2-Privada"]
+        end
+        NAT["NATGW-Privada"]
+        GWEP["GWEP-S3-Privada<br>(Gateway Endpoint S3)"]
     end
-    NAT["NATGW-Privada"]
-    GWEP["GWEP-S3-Privada<br>(Gateway Endpoint S3)"]
-  end
 end
 
 RT2 --> SUB2
@@ -88,9 +88,9 @@ S3[(S3<br>bucket de prueba)]
 2. **Service category**: `AWS services` → **Service name**: `com.amazonaws.<region>.s3`.
 3. **VPC**: `VPC-Privada`.
 4. **VPC endpoint settings**:
-   - **Type**: `Gateway`.
-   - **Route tables**: selecciona **RT-Privada** (la de `subnet-priv-a`).
-   - **Policy**: `Full access` (por defecto) para la práctica.
+    - **Type**: `Gateway`.
+    - **Route tables**: selecciona **RT-Privada** (la de `subnet-priv-a`).
+    - **Policy**: `Full access` (por defecto) para la práctica.
 5. **Create endpoint** y espera a estado **Available**.
 
 **Progresión (tras paso 2):**
@@ -113,14 +113,14 @@ RT2 --- GWEP
 **A)** Verificación simple de conectividad selectiva:
 
 1. En **EC2-Privada** (subnet-priv-a), ejecuta:
-   - `curl -I http://s3.<tu-region>.amazonaws.com` → **debe responder 403** (no autenticado, pero hay conectividad).
-   - `curl -I http://example.com` → **funciona** (vía NAT), si no cambiaste la ruta por defecto.
+    - `curl -I http://s3.<tu-region>.amazonaws.com` → **debe responder 403** (no autenticado, pero hay conectividad).
+    - `curl -I http://example.com` → **funciona** (vía NAT), si no cambiaste la ruta por defecto.
 
 2. **Prueba concluyente (opcional):** edita temporalmente **RT-Privada** y elimina la **ruta por defecto `0.0.0.0/0 → NATGW`**.
-   - Repite:
-     - `curl -I http://s3.<tu-region>.amazonaws.com` → **sigue respondiendo 403** (conectividad a S3 por **Gateway Endpoint**).
-     - `curl -I http://example.com` → **falla** (sin NAT).
-   - **Restaura** luego la ruta por defecto a NAT.
+    - Repite:
+        - `curl -I http://s3.<tu-region>.amazonaws.com` → **sigue respondiendo 403** (conectividad a S3 por **Gateway Endpoint**).
+        - `curl -I http://example.com` → **falla** (sin NAT).
+    - **Restaura** luego la ruta por defecto a NAT.
 
 **B)** En **VPC → Route tables → RT-Privada**, verifica que exista la **entrada hacia el Prefix List de S3** (pl-*) apuntando al **Gateway Endpoint**.
 
@@ -137,9 +137,9 @@ RT2 --- GWEP
 ### 🧹 Limpieza (GUI)
 
 - Si no vas a usar el endpoint:
-  1. **VPC → Endpoints**: elimina **GWEP-S3-Privada**.
-  2. **S3**: elimina el **bucket de prueba** y su contenido (si lo creaste).
-  3. **RT-Privada**: asegúrate de restaurar `0.0.0.0/0 → NATGW` si la quitaste.
+    1. **VPC → Endpoints**: elimina **GWEP-S3-Privada**.
+    2. **S3**: elimina el **bucket de prueba** y su contenido (si lo creaste).
+    3. **RT-Privada**: asegúrate de restaurar `0.0.0.0/0 → NATGW` si la quitaste.
 
 ---
 ---
@@ -172,9 +172,9 @@ aws configure get region
 ```bash
 # Crea un bucket (usa un nombre único en tu cuenta)
 aws s3api create-bucket \
-  --bucket <BUCKET_UNICO> \
-  --create-bucket-configuration LocationConstraint=us-east-1 \
-  --region us-east-1
+    --bucket <BUCKET_UNICO> \
+    --create-bucket-configuration LocationConstraint=us-east-1 \
+    --region us-east-1
 
 # Sube un objeto de prueba desde CloudShell
 echo "Objeto de prueba Nivel 5" > objeto.txt
@@ -188,12 +188,12 @@ aws s3 cp objeto.txt s3://<BUCKET_UNICO>/objeto.txt --region us-east-1
 ```bash
 # Crea el endpoint (tipo Gateway) para S3 en la VPC-Privada
 aws ec2 create-vpc-endpoint \
-  --vpc-id <VPC_PRIV_ID> \
-  --service-name com.amazonaws.us-east-1.s3 \
-  --vpc-endpoint-type Gateway \
-  --route-table-ids <RT_PRIV_ID> \
-  --tag-specifications 'ResourceType=vpc-endpoint,Tags=[{Key=Name,Value=GWEP-S3-Privada}]' \
-  --region us-east-1
+    --vpc-id <VPC_PRIV_ID> \
+    --service-name com.amazonaws.us-east-1.s3 \
+    --vpc-endpoint-type Gateway \
+    --route-table-ids <RT_PRIV_ID> \
+    --tag-specifications 'ResourceType=vpc-endpoint,Tags=[{Key=Name,Value=GWEP-S3-Privada}]' \
+    --region us-east-1
 # Copia VpcEndpointId como <GWEP_ID>
 ```
 
@@ -220,10 +220,10 @@ curl -I http://example.com                   # debe fallar
 ### 🧯 Troubleshooting rápido
 
 - Comprueba el **estado** del endpoint:
-  
-  ```bash
-  aws ec2 describe-vpc-endpoints --vpc-endpoint-ids <GWEP_ID> --region us-east-1
-  ```
+
+    ```bash
+    aws ec2 describe-vpc-endpoints --vpc-endpoint-ids <GWEP_ID> --region us-east-1
+    ```
 
 - Verifica en **RT-Privada** que apareció una **ruta al Prefix List de S3 (pl-*)** dirigida al **GWEP**.
 
@@ -234,8 +234,8 @@ curl -I http://example.com                   # debe fallar
 ```bash
 # 1) Eliminar el Gateway Endpoint
 aws ec2 delete-vpc-endpoints \
-  --vpc-endpoint-ids <GWEP_ID> \
-  --region us-east-1
+    --vpc-endpoint-ids <GWEP_ID> \
+    --region us-east-1
 
 # 2) (Opcional) Borrar bucket y objeto de prueba
 aws s3 rm s3://<BUCKET_UNICO>/objeto.txt --region us-east-1

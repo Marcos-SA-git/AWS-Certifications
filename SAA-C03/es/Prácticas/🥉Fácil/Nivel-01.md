@@ -44,24 +44,24 @@ title: "Nivel 1 — Objetivo final: Peering entre VPC pública y privada"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC1["VPC-Publica 10.0.0.0/16"]
-    IGW[IGW-Publica]
-    RT1["RT-Publica<br>0.0.0.0/0 -> IGW<br>10.1.0.0/16 -> PCX"]
-    subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
-      EC2PUB["EC2-WebPublica<br>HTTP:80<br>IP privada 10.0.1.x"]
-      SGPUB["SG-WebPublica<br>IN 80 TCP 0.0.0.0/0<br>(Opcional) IN 22 TCP tu /32<br>OUT all"]
+    subgraph VPC1["VPC-Publica 10.0.0.0/16"]
+        IGW[IGW-Publica]
+        RT1["RT-Publica<br>0.0.0.0/0 -> IGW<br>10.1.0.0/16 -> PCX"]
+        subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
+            EC2PUB["EC2-WebPublica<br>HTTP:80<br>IP privada 10.0.1.x"]
+            SGPUB["SG-WebPublica<br>IN 80 TCP 0.0.0.0/0<br>(Opcional) IN 22 TCP tu /32<br>OUT all"]
+        end
     end
-  end
 
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    RT2["RT-Privada<br>10.0.0.0/16 -> PCX"]
-    subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
-      EC2PRI["EC2-Privada<br>Sin IP pública<br>IP privada 10.1.1.x"]
-      SGPRI["SG-Privada<br>IN ICMP desde 10.0.0.0/16<br>OUT all"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        RT2["RT-Privada<br>10.0.0.0/16 -> PCX"]
+        subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+            EC2PRI["EC2-Privada<br>Sin IP pública<br>IP privada 10.1.1.x"]
+            SGPRI["SG-Privada<br>IN ICMP desde 10.0.0.0/16<br>OUT all"]
+        end
     end
-  end
 
-  PCX["PCX-Publica-Privada<br>(VPC Peering)"]
+    PCX["PCX-Publica-Privada<br>(VPC Peering)"]
 end
 
 IGW --> VPC1
@@ -91,10 +91,10 @@ title: "Nivel 1 — Paso 1: VPC privada y subnet"
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+        end
     end
-  end
 end
 
 ```
@@ -116,11 +116,11 @@ title: "Nivel 1 — Paso 2: RT-Privada asociada"
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    RT2["RT-Privada<br>(solo local)"]
-    subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        RT2["RT-Privada<br>(solo local)"]
+        subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+        end
     end
-  end
 end
 RT2 --> SUB2
 
@@ -133,8 +133,8 @@ RT2 --> SUB2
 1. **Security Groups** → **Create security group**.
 2. **Name**: `SG-Privada` — **VPC**: `VPC-Privada`.
 3. **Inbound rules** → **Add rule**:
-   - **Type**: `All ICMP - IPv4`
-   - **Source**: `10.0.0.0/16` (CIDR de tu VPC-Publica).
+    - **Type**: `All ICMP - IPv4`
+    - **Source**: `10.0.0.0/16` (CIDR de tu VPC-Publica).
 4. **Outbound rules**: **All traffic** → `0.0.0.0/0`.
 5. **Create security group**.
 
@@ -168,9 +168,9 @@ title: "Nivel 1 — Paso 5: PCX creado y aceptado"
 ---
 graph BT
 subgraph AWS[AWS]
-  VPC1["VPC-Publica 10.0.0.0/16"]
-  VPC2["VPC-Privada 10.1.0.0/16"]
-  PCX["PCX-Publica-Privada"]
+    VPC1["VPC-Publica 10.0.0.0/16"]
+    VPC2["VPC-Privada 10.1.0.0/16"]
+    PCX["PCX-Publica-Privada"]
 end
 PCX --- VPC1
 PCX --- VPC2
@@ -182,11 +182,11 @@ PCX --- VPC2
 ### 🔧 Paso 6 — Añadir rutas de peering en ambas VPC
 
 1. **RT-Publica** (de `VPC-Publica`) → **Routes** → **Edit routes** → **Add route**:
-   - **Destination**: `10.1.0.0/16`
-   - **Target**: `Peering connection` → `PCX-Publica-Privada` → **Save**.
+    - **Destination**: `10.1.0.0/16`
+    - **Target**: `Peering connection` → `PCX-Publica-Privada` → **Save**.
 2. **RT-Privada** (de `VPC-Privada`) → **Routes** → **Edit routes** → **Add route**:
-   - **Destination**: `10.0.0.0/16`
-   - **Target**: `Peering connection` → `PCX-Publica-Privada` → **Save**.
+    - **Destination**: `10.0.0.0/16`
+    - **Target**: `Peering connection` → `PCX-Publica-Privada` → **Save**.
 
 **Progresión (tras paso 6):**
 
@@ -197,8 +197,8 @@ title: "Nivel 1 — Paso 6: Rutas PCX en ambas tablas"
 ---
 graph BT
 subgraph AWS[AWS]
-  RT1["RT-Publica<br>10.1.0.0/16 -> PCX"]
-  RT2["RT-Privada<br>10.0.0.0/16 -> PCX"]
+    RT1["RT-Publica<br>10.1.0.0/16 -> PCX"]
+    RT2["RT-Privada<br>10.0.0.0/16 -> PCX"]
 end
 
 ```
@@ -209,11 +209,11 @@ end
 
 - Desde tu **PC** (opcional): habilita **SSH 22** en **SG-WebPublica** solo desde **tu IP /32**, conéctate a **EC2-WebPublica**.
 - En **EC2-WebPublica**:
-  1. Haz **ping** a la **IP privada** de `EC2-Privada` (ej.: `10.1.1.x`).
-  2. Si recibes respuesta, implica que:
-     - **RT-Publica** y **RT-Privada** tienen rutas correctas hacia el **PCX**.
-     - **SG-Privada** permite **ICMP** desde `10.0.0.0/16`.
-     - El **retorno** funciona (bidireccionalidad).
+    1. Haz **ping** a la **IP privada** de `EC2-Privada` (ej.: `10.1.1.x`).
+    2. Si recibes respuesta, implica que:
+       - **RT-Publica** y **RT-Privada** tienen rutas correctas hacia el **PCX**.
+       - **SG-Privada** permite **ICMP** desde `10.0.0.0/16`.
+       - El **retorno** funciona (bidireccionalidad).
 
 **Progresión (verificación):**
 
@@ -283,29 +283,29 @@ aws configure get region
 
 ```bash
 aws ec2 create-vpc \
-  --cidr-block 10.1.0.0/16 \
-  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Privada}]' \
-  --region us-east-1
+    --cidr-block 10.1.0.0/16 \
+    --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=VPC-Privada}]' \
+    --region us-east-1
 # Copia VpcId como <VPC_PRIV_ID>
 
 aws ec2 create-subnet \
-  --vpc-id <VPC_PRIV_ID> \
-  --cidr-block 10.1.1.0/24 \
-  --availability-zone us-east-1a \
-  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-priv-a}]' \
-  --region us-east-1
+    --vpc-id <VPC_PRIV_ID> \
+    --cidr-block 10.1.1.0/24 \
+    --availability-zone us-east-1a \
+    --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-priv-a}]' \
+    --region us-east-1
 # Copia SubnetId como <SUBNET_PRIV_ID>
 
 aws ec2 create-route-table \
-  --vpc-id <VPC_PRIV_ID> \
-  --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Privada}]' \
-  --region us-east-1
+    --vpc-id <VPC_PRIV_ID> \
+    --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Privada}]' \
+    --region us-east-1
 # Copia RouteTableId como <RT_PRIV_ID>
 
 aws ec2 associate-route-table \
-  --subnet-id <SUBNET_PRIV_ID> \
-  --route-table-id <RT_PRIV_ID> \
-  --region us-east-1
+    --subnet-id <SUBNET_PRIV_ID> \
+    --route-table-id <RT_PRIV_ID> \
+    --region us-east-1
 # Copia AssociationId como <RT_PRIV_ASSOC_ID>
 ```
 
@@ -315,36 +315,36 @@ aws ec2 associate-route-table \
 
 ```bash
 aws ec2 create-security-group \
-  --group-name SG-Privada \
-  --description "SG privada ICMP desde VPC-Publica" \
-  --vpc-id <VPC_PRIV_ID> \
-  --region us-east-1
+    --group-name SG-Privada \
+    --description "SG privada ICMP desde VPC-Publica" \
+    --vpc-id <VPC_PRIV_ID> \
+    --region us-east-1
 # Copia GroupId como <SG_PRIV_ID>
 
 aws ec2 authorize-security-group-ingress \
-  --group-id <SG_PRIV_ID> \
-  --ip-permissions IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges='[{CidrIp=10.0.0.0/16,Description=ICMP-desde-VPC-Publica}]' \
-  --region us-east-1
+    --group-id <SG_PRIV_ID> \
+    --ip-permissions IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges='[{CidrIp=10.0.0.0/16,Description=ICMP-desde-VPC-Publica}]' \
+    --region us-east-1
 
 # Lanza EC2-Privada (sin IP pública)
 aws ssm get-parameters \
-  --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64 \
-  --region us-east-1
+    --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64 \
+    --region us-east-1
 # Copia Parameters[0].Value como <AMI_ID>
 
 aws ec2 run-instances \
-  --image-id <AMI_ID> \
-  --instance-type t2.micro \
-  --subnet-id <SUBNET_PRIV_ID> \
-  --no-associate-public-ip-address \
-  --security-group-ids <SG_PRIV_ID> \
-  --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-Privada}]' \
-  --region us-east-1
+    --image-id <AMI_ID> \
+    --instance-type t2.micro \
+    --subnet-id <SUBNET_PRIV_ID> \
+    --no-associate-public-ip-address \
+    --security-group-ids <SG_PRIV_ID> \
+    --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=EC2-Privada}]' \
+    --region us-east-1
 # Copia InstanceId como <INSTANCE_PRIV_ID>
 
 aws ec2 describe-instances \
-  --instance-ids <INSTANCE_PRIV_ID> \
-  --region us-east-1
+    --instance-ids <INSTANCE_PRIV_ID> \
+    --region us-east-1
 # Copia PrivateIpAddress como <PRIVATE_IP_PRIVADA>
 ```
 
@@ -355,30 +355,30 @@ aws ec2 describe-instances \
 ```bash
 # Crea el peering
 aws ec2 create-vpc-peering-connection \
-  --vpc-id <VPC_PUB_ID> \
-  --peer-vpc-id <VPC_PRIV_ID> \
-  --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=PCX-Publica-Privada}]' \
-  --region us-east-1
+    --vpc-id <VPC_PUB_ID> \
+    --peer-vpc-id <VPC_PRIV_ID> \
+    --tag-specifications 'ResourceType=vpc-peering-connection,Tags=[{Key=Name,Value=PCX-Publica-Privada}]' \
+    --region us-east-1
 # Copia VpcPeeringConnectionId como <PCX_ID>
 
 # Acepta el peering
 aws ec2 accept-vpc-peering-connection \
-  --vpc-peering-connection-id <PCX_ID> \
-  --region us-east-1
+    --vpc-peering-connection-id <PCX_ID> \
+    --region us-east-1
 
 # Añade ruta en RT-Publica (hacia 10.1.0.0/16 via PCX)
 aws ec2 create-route \
-  --route-table-id <RT_PUB_ID> \
-  --destination-cidr-block 10.1.0.0/16 \
-  --vpc-peering-connection-id <PCX_ID> \
-  --region us-east-1
+    --route-table-id <RT_PUB_ID> \
+    --destination-cidr-block 10.1.0.0/16 \
+    --vpc-peering-connection-id <PCX_ID> \
+    --region us-east-1
 
 # Añade ruta en RT-Privada (hacia 10.0.0.0/16 via PCX)
 aws ec2 create-route \
-  --route-table-id <RT_PRIV_ID> \
-  --destination-cidr-block 10.0.0.0/16 \
-  --vpc-peering-connection-id <PCX_ID> \
-  --region us-east-1
+    --route-table-id <RT_PRIV_ID> \
+    --destination-cidr-block 10.0.0.0/16 \
+    --vpc-peering-connection-id <PCX_ID> \
+    --region us-east-1
 ```
 
 ---

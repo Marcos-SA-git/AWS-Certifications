@@ -25,24 +25,24 @@ title: "Nivel 1 — Objetivo final"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC1["VPC-Publica"]
-    IGW[IGW-Publica]
-    RT1["RT-Publica<br>0.0.0.0/0 -> IGW<br>RUTA a VPC-Privada -> PCX"]
-    subgraph SUB1["subnet-pub-a"]
-      EC2PUB["EC2-WebPublica<br>IP privada 10.0.1.x"]
-      SGPUB["SG-WebPublica"]
+    subgraph VPC1["VPC-Publica"]
+        IGW[IGW-Publica]
+        RT1["RT-Publica<br>0.0.0.0/0 -> IGW<br>RUTA a VPC-Privada -> PCX"]
+        subgraph SUB1["subnet-pub-a"]
+            EC2PUB["EC2-WebPublica<br>IP privada 10.0.1.x"]
+            SGPUB["SG-WebPublica"]
+        end
     end
-  end
 
-  subgraph VPC2["VPC-Privada"]
-    RT2["RT-Privada<br>RUTA a VPC-Publica -> PCX"]
-    subgraph SUB2["subnet-priv-a"]
-      EC2PRI["EC2-Privada<br>Sin IP pública<br>IP privada 10.1.1.x"]
-      SGPRI["SG-Privada<br>IN ICMP desde VPC-Publica<br>OUT all"]
+    subgraph VPC2["VPC-Privada"]
+        RT2["RT-Privada<br>RUTA a VPC-Publica -> PCX"]
+        subgraph SUB2["subnet-priv-a"]
+            EC2PRI["EC2-Privada<br>Sin IP pública<br>IP privada 10.1.1.x"]
+            SGPRI["SG-Privada<br>IN ICMP desde VPC-Publica<br>OUT all"]
+        end
     end
-  end
 
-  PCX["PCX-Publica-Privada"]
+    PCX["PCX-Publica-Privada"]
 end
 
 IGW --> VPC1

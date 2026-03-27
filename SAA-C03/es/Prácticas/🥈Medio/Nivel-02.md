@@ -45,27 +45,27 @@ title: "Nivel 2 — Objetivo final (Media)"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC1["VPC-Publica (/16)"]
-    IGW1[IGW-Publica]
-    RT1["RT-Publica<br>0.0.0.0/0 -> IGW-Publica<br>RUTA -> PCX"]
-    subgraph SUB1["subnet-pub-a (/24)"]
-      EC2PUB["EC2-WebPublica"]
+    subgraph VPC1["VPC-Publica (/16)"]
+        IGW1[IGW-Publica]
+        RT1["RT-Publica<br>0.0.0.0/0 -> IGW-Publica<br>RUTA -> PCX"]
+        subgraph SUB1["subnet-pub-a (/24)"]
+            EC2PUB["EC2-WebPublica"]
+        end
     end
-  end
 
-  subgraph VPC2["VPC-Privada (/16)"]
-    IGW2[IGW-Privada]
-    RT2PUB["RT-Publica-Privada<br>0.0.0.0/0 -> IGW-Privada"]
-    RT2PRI["RT-Privada<br>RUTA -> PCX<br>0.0.0.0/0 -> NATGW"]
-    subgraph SUB2PUB["subnet-nat-a (/24)"]
-      NAT["NATGW-Privada<br>EIP"]
+    subgraph VPC2["VPC-Privada (/16)"]
+        IGW2[IGW-Privada]
+        RT2PUB["RT-Publica-Privada<br>0.0.0.0/0 -> IGW-Privada"]
+        RT2PRI["RT-Privada<br>RUTA -> PCX<br>0.0.0.0/0 -> NATGW"]
+        subgraph SUB2PUB["subnet-nat-a (/24)"]
+            NAT["NATGW-Privada<br>EIP"]
+        end
+        subgraph SUB2PRI["subnet-priv-a (/24)"]
+            EC2PRI["EC2-Privada"]
+        end
     end
-    subgraph SUB2PRI["subnet-priv-a (/24)"]
-      EC2PRI["EC2-Privada"]
-    end
-  end
 
-  PCX["PCX-Publica-Privada"]
+    PCX["PCX-Publica-Privada"]
 end
 
 IGW2 --> VPC2
@@ -81,27 +81,27 @@ PCX --- VPC2
 ### 🧭 Plan de trabajo (tú ejecutas los pasos)
 
 1) **Subred pública + IGW (VPC-Privada)**  
-   - Crea `subnet-nat-a` (/24) y habilita **Auto-assign public IPv4**.  
-   - Crea `IGW-Privada` y **adjúntalo** a **VPC-Privada**.  
-   - Crea `RT-Publica-Privada` y asócialo a `subnet-nat-a` con **0.0.0.0/0 → IGW-Privada**.
+    - Crea `subnet-nat-a` (/24) y habilita **Auto-assign public IPv4**.  
+    - Crea `IGW-Privada` y **adjúntalo** a **VPC-Privada**.  
+    - Crea `RT-Publica-Privada` y asócialo a `subnet-nat-a` con **0.0.0.0/0 → IGW-Privada**.
 
 2) **NAT Gateway**  
-   - Asigna una **Elastic IP**.  
-   - Crea `NATGW-Privada` en `subnet-nat-a` usando esa **EIP**.  
-   - Espera a **Available**.
+    - Asigna una **Elastic IP**.  
+    - Crea `NATGW-Privada` en `subnet-nat-a` usando esa **EIP**.  
+    - Espera a **Available**.
 
 3) **Rutas**  
-   - En `RT-Privada`, añade **0.0.0.0/0 → NATGW**.  
-   - Mantén la ruta de peering hacia la otra VPC.
+    - En `RT-Privada`, añade **0.0.0.0/0 → NATGW**.  
+    - Mantén la ruta de peering hacia la otra VPC.
 
 4) **Verificación**  
-   - Desde una instancia en `subnet-priv-a`, prueba **HTTP** a Internet (p. ej., `curl http://example.com`).  
-   - (Opcional) Comprueba IP de salida con `https://checkip.amazonaws.com`.
+    - Desde una instancia en `subnet-priv-a`, prueba **HTTP** a Internet (p. ej., `curl http://example.com`).  
+    - (Opcional) Comprueba IP de salida con `https://checkip.amazonaws.com`.
 
 5) **Limpieza (para volver a Nivel 1)**  
-   - Quita la ruta por defecto a NAT en `RT-Privada`.  
-   - Elimina **NATGW** y libera la **EIP**.  
-   - Borra `RT-Publica-Privada`, `subnet-nat-a` y `IGW-Privada`.
+    - Quita la ruta por defecto a NAT en `RT-Privada`.  
+    - Elimina **NATGW** y libera la **EIP**.  
+    - Borra `RT-Publica-Privada`, `subnet-nat-a` y `IGW-Privada`.
 
 ---
 

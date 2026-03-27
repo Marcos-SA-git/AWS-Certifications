@@ -46,27 +46,27 @@ title: "Nivel 2 — Objetivo final: NAT en VPC-Privada"
 graph BT
 
 subgraph AWS[AWS]
-  subgraph VPC1["VPC-Publica 10.0.0.0/16"]
-    IGW1[IGW-Publica]
-    RT1["RT-Publica<br>0.0.0.0/0 -> IGW-Publica<br>10.1.0.0/16 -> PCX"]
-    subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
-      EC2PUB["EC2-WebPublica<br>10.0.1.x"]
+    subgraph VPC1["VPC-Publica 10.0.0.0/16"]
+        IGW1[IGW-Publica]
+        RT1["RT-Publica<br>0.0.0.0/0 -> IGW-Publica<br>10.1.0.0/16 -> PCX"]
+        subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
+            EC2PUB["EC2-WebPublica<br>10.0.1.x"]
+        end
     end
-  end
 
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    IGW2[IGW-Privada]
-    RT2PUB["RT-Publica-Privada<br>0.0.0.0/0 -> IGW-Privada"]
-    RT2PRI["RT-Privada<br>10.0.0.0/16 -> PCX<br>0.0.0.0/0 -> NATGW"]
-    subgraph SUB2PUB["subnet-nat-a 10.1.0.0/24"]
-      NAT["NATGW-Privada<br>EIP asignada"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        IGW2[IGW-Privada]
+        RT2PUB["RT-Publica-Privada<br>0.0.0.0/0 -> IGW-Privada"]
+        RT2PRI["RT-Privada<br>10.0.0.0/16 -> PCX<br>0.0.0.0/0 -> NATGW"]
+        subgraph SUB2PUB["subnet-nat-a 10.1.0.0/24"]
+            NAT["NATGW-Privada<br>EIP asignada"]
+        end
+        subgraph SUB2PRI["subnet-priv-a 10.1.1.0/24"]
+            EC2PRI["EC2-Privada<br>Sin IP pública"]
+        end
     end
-    subgraph SUB2PRI["subnet-priv-a 10.1.1.0/24"]
-      EC2PRI["EC2-Privada<br>Sin IP pública"]
-    end
-  end
 
-  PCX["PCX-Publica-Privada"]
+    PCX["PCX-Publica-Privada"]
 end
 
 IGW1 --> VPC1
@@ -84,9 +84,9 @@ PCX --- VPC2
 ### 🔧 Paso 1 — Crear subred pública para el NAT e IGW en VPC-Privada
 
 1. **VPC-Privada** → **Subnets** → **Create subnet**:
-   - **Name**: `subnet-nat-a`
-   - **CIDR**: `10.1.0.0/24` (no solape con `10.1.1.0/24`)
-   - **AZ**: `us-east-1a` (o tu preferida)
+    - **Name**: `subnet-nat-a`
+    - **CIDR**: `10.1.0.0/24` (no solape con `10.1.1.0/24`)
+    - **AZ**: `us-east-1a` (o tu preferida)
 2. **Subnet settings** → **Enable auto-assign public IPv4** → **Save**.
 3. **Internet Gateways** → **Create internet gateway** → **Name**: `IGW-Privada` → **Create**.
 4. **Attach to VPC** → **VPC-Privada**.
@@ -100,13 +100,13 @@ title: "Nivel 2 — Paso 1: Subred pública e IGW en VPC-Privada"
 ---
 graph BT
 subgraph AWS[AWS]
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    IGW2[IGW-Privada]
-    subgraph SUB2PUB["subnet-nat-a 10.1.0.0/24"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        IGW2[IGW-Privada]
+        subgraph SUB2PUB["subnet-nat-a 10.1.0.0/24"]
+        end
+        subgraph SUB2PRI["subnet-priv-a 10.1.1.0/24"]
+        end
     end
-    subgraph SUB2PRI["subnet-priv-a 10.1.1.0/24"]
-    end
-  end
 end
 IGW2 --> VPC2
 
@@ -129,8 +129,8 @@ title: "Nivel 2 — Paso 2: RT-Publica-Privada con salida a IGW"
 ---
 graph BT
 subgraph AWS[AWS]
-  RT2PUB["RT-Publica-Privada<br>0.0.0.0/0 -> IGW-Privada"]
-  SUB2PUB["subnet-nat-a 10.1.0.0/24"]
+    RT2PUB["RT-Publica-Privada<br>0.0.0.0/0 -> IGW-Privada"]
+    SUB2PUB["subnet-nat-a 10.1.0.0/24"]
 end
 RT2PUB --> SUB2PUB
 
@@ -142,13 +142,13 @@ RT2PUB --> SUB2PUB
 
 1. **Elastic IPs** → **Allocate Elastic IP** (VPC) → anota el **Allocation ID**.
 2. **NAT Gateways** → **Create NAT gateway**:
-   - **Subnet**: `subnet-nat-a`
-   - **Elastic IP**: el recién asignado
-   - **Name**: `NATGW-Privada`
+    - **Subnet**: `subnet-nat-a`
+    - **Elastic IP**: el recién asignado
+    - **Name**: `NATGW-Privada`
 3. Espera a **Available** (estado).
 4. **Route Tables** → abre `RT-Privada`:
-   - **Routes** → **Edit** → **Add route** `0.0.0.0/0 → NATGW-Privada` → **Save**.
-   - Mantén la ruta **10.0.0.0/16 → PCX** para el peering.
+    - **Routes** → **Edit** → **Add route** `0.0.0.0/0 → NATGW-Privada` → **Save**.
+    - Mantén la ruta **10.0.0.0/16 → PCX** para el peering.
 
 **Progresión (tras paso 3):**
 
@@ -185,12 +185,12 @@ RT2PRI --> NAT
 ### 🧹 Limpieza (GUI)
 
 - Para volver al estado del **Nivel 1**:
-  1. En **RT-Privada**, elimina la ruta `0.0.0.0/0 → NATGW`.
-  2. **NAT Gateways** → **Delete** `NATGW-Privada`.
-  3. **Elastic IPs** → **Release** la EIP usada por el NAT (cuando el NAT esté eliminado).
-  4. **Route Tables** → desasocia y elimina `RT-Publica-Privada`.
-  5. **Subnets** → elimina `subnet-nat-a`.
-  6. **Internet Gateways** → **Detach** `IGW-Privada` de `VPC-Privada` y **Delete**.
+    1. En **RT-Privada**, elimina la ruta `0.0.0.0/0 → NATGW`.
+    2. **NAT Gateways** → **Delete** `NATGW-Privada`.
+    3. **Elastic IPs** → **Release** la EIP usada por el NAT (cuando el NAT esté eliminado).
+    4. **Route Tables** → desasocia y elimina `RT-Publica-Privada`.
+    5. **Subnets** → elimina `subnet-nat-a`.
+    6. **Internet Gateways** → **Detach** `IGW-Privada` de `VPC-Privada` y **Delete**.
 
 ---
 ---
@@ -221,27 +221,27 @@ aws configure get region
 
 ```bash
 aws ec2 create-subnet \
-  --vpc-id <VPC_PRIV_ID> \
-  --cidr-block 10.1.0.0/24 \
-  --availability-zone us-east-1a \
-  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-a}]' \
-  --region us-east-1
+    --vpc-id <VPC_PRIV_ID> \
+    --cidr-block 10.1.0.0/24 \
+    --availability-zone us-east-1a \
+    --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=subnet-nat-a}]' \
+    --region us-east-1
 # Copia SubnetId como <SUBNET_NAT_ID>
 
 aws ec2 modify-subnet-attribute \
-  --subnet-id <SUBNET_NAT_ID> \
-  --map-public-ip-on-launch \
-  --region us-east-1
+    --subnet-id <SUBNET_NAT_ID> \
+    --map-public-ip-on-launch \
+    --region us-east-1
 
 aws ec2 create-internet-gateway \
-  --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Privada}]' \
-  --region us-east-1
+    --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=IGW-Privada}]' \
+    --region us-east-1
 # Copia InternetGatewayId como <IGW_PRIV_ID>
 
 aws ec2 attach-internet-gateway \
-  --internet-gateway-id <IGW_PRIV_ID> \
-  --vpc-id <VPC_PRIV_ID> \
-  --region us-east-1
+    --internet-gateway-id <IGW_PRIV_ID> \
+    --vpc-id <VPC_PRIV_ID> \
+    --region us-east-1
 ```
 
 ---
@@ -250,21 +250,21 @@ aws ec2 attach-internet-gateway \
 
 ```bash
 aws ec2 create-route-table \
-  --vpc-id <VPC_PRIV_ID> \
-  --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica-Privada}]' \
-  --region us-east-1
+    --vpc-id <VPC_PRIV_ID> \
+    --tag-specifications 'ResourceType=route-table,Tags=[{Key=Name,Value=RT-Publica-Privada}]' \
+    --region us-east-1
 # Copia RouteTableId como <RT_PRIV_PUB_ID>
 
 aws ec2 create-route \
-  --route-table-id <RT_PRIV_PUB_ID> \
-  --destination-cidr-block 0.0.0.0/0 \
-  --gateway-id <IGW_PRIV_ID> \
-  --region us-east-1
+    --route-table-id <RT_PRIV_PUB_ID> \
+    --destination-cidr-block 0.0.0.0/0 \
+    --gateway-id <IGW_PRIV_ID> \
+    --region us-east-1
 
 aws ec2 associate-route-table \
-  --subnet-id <SUBNET_NAT_ID> \
-  --route-table-id <RT_PRIV_PUB_ID> \
-  --region us-east-1
+    --subnet-id <SUBNET_NAT_ID> \
+    --route-table-id <RT_PRIV_PUB_ID> \
+    --region us-east-1
 # Copia AssociationId como <RT_PRIV_PUB_ASSOC_ID>
 ```
 
@@ -274,22 +274,22 @@ aws ec2 associate-route-table \
 
 ```bash
 aws ec2 allocate-address \
-  --domain vpc \
-  --region us-east-1
+    --domain vpc \
+    --region us-east-1
 # Copia AllocationId como <EIP_ALLOC_ID>
 
 aws ec2 create-nat-gateway \
-  --subnet-id <SUBNET_NAT_ID> \
-  --allocation-id <EIP_ALLOC_ID> \
-  --tag-specifications 'ResourceType=natgateway,Tags=[{Key=Name,Value=NATGW-Privada}]' \
-  --region us-east-1
+    --subnet-id <SUBNET_NAT_ID> \
+    --allocation-id <EIP_ALLOC_ID> \
+    --tag-specifications 'ResourceType=natgateway,Tags=[{Key=Name,Value=NATGW-Privada}]' \
+    --region us-east-1
 # Copia NatGatewayId como <NATGW_ID> (espera a estado 'available' antes de seguir)
 
 aws ec2 create-route \
-  --route-table-id <RT_PRIV_ID> \
-  --destination-cidr-block 0.0.0.0/0 \
-  --nat-gateway-id <NATGW_ID> \
-  --region us-east-1
+    --route-table-id <RT_PRIV_ID> \
+    --destination-cidr-block 0.0.0.0/0 \
+    --nat-gateway-id <NATGW_ID> \
+    --region us-east-1
 ```
 
 ---
@@ -319,37 +319,37 @@ curl https://checkip.amazonaws.com
 ```bash
 # 1) Quitar ruta por defecto hacia NAT en RT-Privada
 aws ec2 delete-route \
-  --route-table-id <RT_PRIV_ID> \
-  --destination-cidr-block 0.0.0.0/0 \
-  --region us-east-1
+    --route-table-id <RT_PRIV_ID> \
+    --destination-cidr-block 0.0.0.0/0 \
+    --region us-east-1
 
 # 2) Borrar NATGW (puede tardar en 'deleted')
 aws ec2 delete-nat-gateway \
-  --nat-gateway-id <NATGW_ID> \
-  --region us-east-1
+    --nat-gateway-id <NATGW_ID> \
+    --region us-east-1
 
 # 3) Liberar la EIP usada por el NAT
 aws ec2 release-address \
-  --allocation-id <EIP_ALLOC_ID> \
-  --region us-east-1
+    --allocation-id <EIP_ALLOC_ID> \
+    --region us-east-1
 
 # 4) RT pública de la VPC-Privada (desasocia antes)
 aws ec2 disassociate-route-table \
-  --association-id <RT_PRIV_PUB_ASSOC_ID> \
-  --region us-east-1
+    --association-id <RT_PRIV_PUB_ASSOC_ID> \
+    --region us-east-1
 aws ec2 delete-route-table \
-  --route-table-id <RT_PRIV_PUB_ID> \
-  --region us-east-1
+    --route-table-id <RT_PRIV_PUB_ID> \
+    --region us-east-1
 
 # 5) Subnet pública e IGW de la VPC-Privada
 aws ec2 delete-subnet \
-  --subnet-id <SUBNET_NAT_ID> \
-  --region us-east-1
+    --subnet-id <SUBNET_NAT_ID> \
+    --region us-east-1
 aws ec2 detach-internet-gateway \
-  --internet-gateway-id <IGW_PRIV_ID> \
-  --vpc-id <VPC_PRIV_ID> \
-  --region us-east-1
+    --internet-gateway-id <IGW_PRIV_ID> \
+    --vpc-id <VPC_PRIV_ID> \
+    --region us-east-1
 aws ec2 delete-internet-gateway \
-  --internet-gateway-id <IGW_PRIV_ID> \
-  --region us-east-1
+    --internet-gateway-id <IGW_PRIV_ID> \
+    --region us-east-1
 ```

@@ -50,35 +50,35 @@ title: "Nivel 6 — Objetivo final: Transit Gateway como hub"
 graph BT
 
 subgraph AWS[AWS]
-  TGW["TGW-Central"]
+    TGW["TGW-Central"]
 
-  subgraph VPC1["VPC-Publica 10.0.0.0/16"]
-    RT1["RT-Publica<br>10.1.0.0/16 -> TGW<br>10.2.0.0/16 -> TGW<br>Default -> IGW"]
-    subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
-      EC2PUB["EC2-WebPublica"]
+    subgraph VPC1["VPC-Publica 10.0.0.0/16"]
+        RT1["RT-Publica<br>10.1.0.0/16 -> TGW<br>10.2.0.0/16 -> TGW<br>Default -> IGW"]
+        subgraph SUB1["subnet-pub-a 10.0.1.0/24"]
+            EC2PUB["EC2-WebPublica"]
+        end
+        IGW1[IGW-Publica]
     end
-    IGW1[IGW-Publica]
-  end
 
-  subgraph VPC2["VPC-Privada 10.1.0.0/16"]
-    RT2["RT-Privada<br>10.0.0.0/16 -> TGW<br>10.2.0.0/16 -> TGW<br>Default -> NATGW<br>pl-S3 -> GWEP-S3-Privada"]
-    subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
-      EC2PRI["EC2-Privada"]
-      VPCE["VPCE-Privada-Servicios"]
+    subgraph VPC2["VPC-Privada 10.1.0.0/16"]
+        RT2["RT-Privada<br>10.0.0.0/16 -> TGW<br>10.2.0.0/16 -> TGW<br>Default -> NATGW<br>pl-S3 -> GWEP-S3-Privada"]
+        subgraph SUB2["subnet-priv-a 10.1.1.0/24"]
+            EC2PRI["EC2-Privada"]
+            VPCE["VPCE-Privada-Servicios"]
+        end
+        NAT[NATGW-Privada]
+        GWEP["GWEP-S3-Privada"]
     end
-    NAT[NATGW-Privada]
-    GWEP["GWEP-S3-Privada"]
-  end
 
-  subgraph VPC3["VPC-Servicios 10.2.0.0/16"]
-    RT3["RT-Publica-Servicios<br>10.0.0.0/16 -> TGW<br>10.1.0.0/16 -> TGW<br>Default -> IGW-Servicios"]
-    subgraph SUB3["subnet-svc-a 10.2.1.0/24"]
-      EC2SVC["EC2-Servicios:80"]
-      NLB["NLB-Servicios (internal)"]
-      ESVC["ES-Servicios"]
+    subgraph VPC3["VPC-Servicios 10.2.0.0/16"]
+        RT3["RT-Publica-Servicios<br>10.0.0.0/16 -> TGW<br>10.1.0.0/16 -> TGW<br>Default -> IGW-Servicios"]
+        subgraph SUB3["subnet-svc-a 10.2.1.0/24"]
+            EC2SVC["EC2-Servicios:80"]
+            NLB["NLB-Servicios (internal)"]
+            ESVC["ES-Servicios"]
+        end
+        IGW3[IGW-Servicios]
     end
-    IGW3[IGW-Servicios]
-  end
 end
 
 TGW --- VPC1
@@ -94,15 +94,15 @@ ESVC --- NLB
 ### 🔧 Paso 1 — Crear Transit Gateway y adjuntar las VPCs
 
 1. **VPC → Transit Gateways → Create transit gateway**.  
-   - **Name**: `TGW-Central`  
-   - Otras opciones por defecto → **Create** (espera a **Available**).
+    - **Name**: `TGW-Central`  
+    - Otras opciones por defecto → **Create** (espera a **Available**).
 2. **Transit Gateway attachments → Create attachment** (repite 3 veces, una por VPC):  
-   - **Name**: `TGW-ATT-Publica` / `TGW-ATT-Privada` / `TGW-ATT-Servicios`  
-   - **Transit gateway ID**: `TGW-Central`  
-   - **Attachment type**: `VPC`  
-   - **VPC**: la VPC correspondiente  
-   - **Subnets**: selecciona la subnet de cada VPC (p. ej., `subnet-pub-a`, `subnet-priv-a`, `subnet-svc-a`)  
-   - **Create attachment** (espera a **Available**).
+    - **Name**: `TGW-ATT-Publica` / `TGW-ATT-Privada` / `TGW-ATT-Servicios`  
+    - **Transit gateway ID**: `TGW-Central`  
+    - **Attachment type**: `VPC`  
+    - **VPC**: la VPC correspondiente  
+    - **Subnets**: selecciona la subnet de cada VPC (p. ej., `subnet-pub-a`, `subnet-priv-a`, `subnet-svc-a`)  
+    - **Create attachment** (espera a **Available**).
 
 **Progresión (tras Paso 1):**
 
@@ -127,10 +127,10 @@ TGW --- VPC3
 ### 🔧 Paso 2 — Tabla de rutas del TGW y propagaciones
 
 1. **Transit gateway route tables → Create**  
-   - **Name**: `TGW-RT-Compartida` → **Create**.
+    - **Name**: `TGW-RT-Compartida` → **Create**.
 2. **Associations**: asocia **cada attachment** a `TGW-RT-Compartida`.
 3. **Propagations**: habilita **propagación** de **cada attachment** en `TGW-RT-Compartida`.  
-   (De este modo, la TGW-RT aprende las rutas de las VPCs 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16).
+     (De este modo, la TGW-RT aprende las rutas de las VPCs 10.0.0.0/16, 10.1.0.0/16, 10.2.0.0/16).
 
 **Progresión (tras Paso 2):**
 
@@ -152,19 +152,19 @@ RT --- TGW["TGW-Central"]
 Ajusta **cada Route Table** de cada VPC para enrutar los **CIDRs remotos** hacia el **TGW**:
 
 - **RT-Publica** (VPC-Publica):  
-  - `10.1.0.0/16 → TGW-Central`  
-  - `10.2.0.0/16 → TGW-Central`  
-  - Mantén `Default → IGW-Publica`.
+    - `10.1.0.0/16 → TGW-Central`  
+    - `10.2.0.0/16 → TGW-Central`  
+    - Mantén `Default → IGW-Publica`.
 
 - **RT-Privada** (VPC-Privada):  
-  - `10.0.0.0/16 → TGW-Central`  
-  - `10.2.0.0/16 → TGW-Central`  
-  - Mantén `Default → NATGW` y `pl-S3 → GWEP-S3-Privada`.
+    - `10.0.0.0/16 → TGW-Central`  
+    - `10.2.0.0/16 → TGW-Central`  
+    - Mantén `Default → NATGW` y `pl-S3 → GWEP-S3-Privada`.
 
 - **RT-Publica-Servicios** (VPC-Servicios):  
-  - `10.0.0.0/16 → TGW-Central`  
-  - `10.1.0.0/16 → TGW-Central`  
-  - Mantén `Default → IGW-Servicios`.
+    - `10.0.0.0/16 → TGW-Central`  
+    - `10.1.0.0/16 → TGW-Central`  
+    - Mantén `Default → IGW-Servicios`.
 
 **Progresión (tras Paso 3):**
 
@@ -188,9 +188,9 @@ VPC1 --> VPC3
 ### 🔎 Verificación
 
 - **Tráfico este-oeste por TGW**:  
-  - Desde `EC2-Privada` → `curl` a la **IP privada** de `EC2-WebPublica` (10.0.1.X).  
-  - Desde `EC2-Privada` → `curl` a la **IP privada** de `EC2-Servicios` (10.2.1.X).  
-  - (Opcional) `traceroute -T -p 80` a esos destinos (pocos saltos visibles en AWS).
+    - Desde `EC2-Privada` → `curl` a la **IP privada** de `EC2-WebPublica` (10.0.1.X).  
+    - Desde `EC2-Privada` → `curl` a la **IP privada** de `EC2-Servicios` (10.2.1.X).  
+    - (Opcional) `traceroute -T -p 80` a esos destinos (pocos saltos visibles en AWS).
 - **S3**: desde `EC2-Privada`, `curl -I http://s3.<region>.amazonaws.com` responde **aunque desconectes Internet** (si quitas temporalmente `Default → NATGW`), validando que sigue por **GWEP**.  
 - **PrivateLink**: desde `EC2-Privada`, `curl` al **DNS del VPCE** responde sin depender del TGW.
 
@@ -207,11 +207,11 @@ VPC1 --> VPC3
 ### 🧹 Limpieza (GUI)
 
 - Para volver al estado del **Nivel 5**:
-  1. En **TGW-RT-Compartida**: deshabilita **propagations** y **associations** de los **attachments**.  
-  2. Elimina **TGW attachments**.  
-  3. Elimina **Transit Gateway**.  
-  4. En cada **Route Table** de VPC, elimina rutas a otros CIDRs que apunten a TGW.  
-  5. Mantén **GWEP-S3-Privada** y **PrivateLink** si continuarás con niveles posteriores.
+    1. En **TGW-RT-Compartida**: deshabilita **propagations** y **associations** de los **attachments**.  
+    2. Elimina **TGW attachments**.  
+    3. Elimina **Transit Gateway**.  
+    4. En cada **Route Table** de VPC, elimina rutas a otros CIDRs que apunten a TGW.  
+    5. Mantén **GWEP-S3-Privada** y **PrivateLink** si continuarás con niveles posteriores.
 
 ---
 ---
@@ -242,33 +242,33 @@ aws configure get region
 
 ```bash
 aws ec2 create-transit-gateway \
-  --description "TGW-Central" \
-  --tag-specifications 'ResourceType=transit-gateway,Tags=[{Key=Name,Value=TGW-Central}]' \
-  --region us-east-1
+    --description "TGW-Central" \
+    --tag-specifications 'ResourceType=transit-gateway,Tags=[{Key=Name,Value=TGW-Central}]' \
+    --region us-east-1
 # Copia TransitGatewayId como <TGW_ID>
 
 aws ec2 create-transit-gateway-vpc-attachment \
-  --transit-gateway-id <TGW_ID> \
-  --vpc-id <VPC_PUB_ID> \
-  --subnet-ids <SUBNET_PUB_ID> \
-  --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Publica}]' \
-  --region us-east-1
+    --transit-gateway-id <TGW_ID> \
+    --vpc-id <VPC_PUB_ID> \
+    --subnet-ids <SUBNET_PUB_ID> \
+    --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Publica}]' \
+    --region us-east-1
 # Copia TransitGatewayAttachmentId como <ATT_PUB_ID>
 
 aws ec2 create-transit-gateway-vpc-attachment \
-  --transit-gateway-id <TGW_ID> \
-  --vpc-id <VPC_PRIV_ID> \
-  --subnet-ids <SUBNET_PRIV_ID> \
-  --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Privada}]' \
-  --region us-east-1
+    --transit-gateway-id <TGW_ID> \
+    --vpc-id <VPC_PRIV_ID> \
+    --subnet-ids <SUBNET_PRIV_ID> \
+    --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Privada}]' \
+    --region us-east-1
 # Copia TransitGatewayAttachmentId como <ATT_PRIV_ID>
 
 aws ec2 create-transit-gateway-vpc-attachment \
-  --transit-gateway-id <TGW_ID> \
-  --vpc-id <VPC_SVC_ID> \
-  --subnet-ids <SUBNET_SVC_ID> \
-  --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Servicios}]' \
-  --region us-east-1
+    --transit-gateway-id <TGW_ID> \
+    --vpc-id <VPC_SVC_ID> \
+    --subnet-ids <SUBNET_SVC_ID> \
+    --tag-specifications 'ResourceType=transit-gateway-attachment,Tags=[{Key=Name,Value=TGW-ATT-Servicios}]' \
+    --region us-east-1
 # Copia TransitGatewayAttachmentId como <ATT_SVC_ID>
 ```
 
@@ -278,40 +278,40 @@ aws ec2 create-transit-gateway-vpc-attachment \
 
 ```bash
 aws ec2 create-transit-gateway-route-table \
-  --transit-gateway-id <TGW_ID> \
-  --tag-specifications 'ResourceType=transit-gateway-route-table,Tags=[{Key=Name,Value=TGW-RT-Compartida}]' \
-  --region us-east-1
+    --transit-gateway-id <TGW_ID> \
+    --tag-specifications 'ResourceType=transit-gateway-route-table,Tags=[{Key=Name,Value=TGW-RT-Compartida}]' \
+    --region us-east-1
 # Copia TransitGatewayRouteTableId como <TGW_RT_ID>
 
 aws ec2 associate-transit-gateway-route-table \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --transit-gateway-attachment-id <ATT_PUB_ID> \
-  --region us-east-1
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --transit-gateway-attachment-id <ATT_PUB_ID> \
+    --region us-east-1
 
 aws ec2 associate-transit-gateway-route-table \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --transit-gateway-attachment-id <ATT_PRIV_ID> \
-  --region us-east-1
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --transit-gateway-attachment-id <ATT_PRIV_ID> \
+    --region us-east-1
 
 aws ec2 associate-transit-gateway-route-table \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --transit-gateway-attachment-id <ATT_SVC_ID> \
-  --region us-east-1
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --transit-gateway-attachment-id <ATT_SVC_ID> \
+    --region us-east-1
 
 aws ec2 enable-transit-gateway-route-table-propagation \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --transit-gateway-attachment-id <ATT_PUB_ID> \
-  --region us-east-1
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --transit-gateway-attachment-id <ATT_PUB_ID> \
+    --region us-east-1
 
 aws ec2 enable-transit-gateway-route-table-propagation \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --transit-gateway-attachment-id <ATT_PRIV_ID> \
-  --region us-east-1
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --transit-gateway-attachment-id <ATT_PRIV_ID> \
+    --region us-east-1
 
 aws ec2 enable-transit-gateway-route-table-propagation \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --transit-gateway-attachment-id <ATT_SVC_ID> \
-  --region us-east-1
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --transit-gateway-attachment-id <ATT_SVC_ID> \
+    --region us-east-1
 ```
 
 ---
@@ -356,17 +356,17 @@ curl -I http://s3.us-east-1.amazonaws.com
 ```bash
 # Listar rutas aprendidas en la TGW-RT
 aws ec2 search-transit-gateway-routes \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --filters Name=type,Values=propagated \
-  --region us-east-1 \
-  --query "Routes[].{CIDR:DestinationCidrBlock, AttachmentId:TransitGatewayAttachments[0].TransitGatewayAttachmentId}"
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --filters Name=type,Values=propagated \
+    --region us-east-1 \
+    --query "Routes[].{CIDR:DestinationCidrBlock, AttachmentId:TransitGatewayAttachments[0].TransitGatewayAttachmentId}"
 
 # Ver rutas estáticas/activas
 aws ec2 search-transit-gateway-routes \
-  --transit-gateway-route-table-id <TGW_RT_ID> \
-  --filters Name=state,Values=active \
-  --region us-east-1 \
-  --query "Routes[].DestinationCidrBlock"
+    --transit-gateway-route-table-id <TGW_RT_ID> \
+    --filters Name=state,Values=active \
+    --region us-east-1 \
+    --query "Routes[].DestinationCidrBlock"
 ```
 
 ---

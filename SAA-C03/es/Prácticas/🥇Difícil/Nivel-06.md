@@ -27,18 +27,18 @@ graph BT
 TGW["TGW-Central"]
 
 subgraph VPC-Publica["VPC-Publica 10.0/16"]
-  EC2PUB["EC2-WebPublica"]
+    EC2PUB["EC2-WebPublica"]
 end
 
 subgraph VPC-Privada["VPC-Privada 10.1/16"]
-  EC2PRI["EC2-Privada"]
-  VPCE["VPCE-Privada-Servicios"]
-  GWEP["GWEP-S3-Privada"]
+    EC2PRI["EC2-Privada"]
+    VPCE["VPCE-Privada-Servicios"]
+    GWEP["GWEP-S3-Privada"]
 end
 
 subgraph VPC-Servicios["VPC-Servicios 10.2/16"]
-  APP["EC2-Servicios"]
-  NLB["NLB-Servicios"]
+    APP["EC2-Servicios"]
+    NLB["NLB-Servicios"]
 end
 
 TGW --- VPC-Publica
